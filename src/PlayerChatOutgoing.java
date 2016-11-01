@@ -6,7 +6,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class PlayerChatOutgoing extends Thread{
+public class PlayerChatOutgoing extends Thread {
     private Socket server;
     private String username;
     private DataOutputStream out;
@@ -16,17 +16,20 @@ public class PlayerChatOutgoing extends Thread{
         this.username = username;
 
         OutputStream outToServer = server.getOutputStream();
-        this.out = new DataOutputStream(outToServer);
+        out = new DataOutputStream(outToServer);
     }
 
     //for getting the message from the user
-    public void run(){
-        while(true){
-            try{
-                System.out.print("\nMessage: ");
+    public void run() {
+        System.out.print("\n\nMessage: ");
+        while (true) {
+            try {
                 String message = System.console().readLine();
-                out.writeUTF(username + ": " + message);    
-            }catch(IOException e){}            
+                out.writeUTF("\n" + username + ": " + message); // send message data
+            } catch(IOException e) {
+                System.out.println("Input/Output error occurs!");
+                System.exit(1);
+            }            
         }
     }
 }
