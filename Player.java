@@ -14,7 +14,7 @@ class Player {
 	public void move(){
 		y = y + dy;
 		x = x + dx;
-		//frameLength = frameLength + dy;
+		frameLength = frameLength + dy;
 	}
  
 	public int getX(){
@@ -40,9 +40,6 @@ class Player {
 	public void mousePressed(MouseEvent e){
 		int eX = e.getX();
 		int eY = e.getY();
-
-		System.out.println(eX);
-		System.out.println(eY);
 	}
 
 	public void mouseDragged(MouseEvent e){

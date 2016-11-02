@@ -4,15 +4,15 @@ class GamePanel extends JPanel{
 	MovingAdapter ma = new MovingAdapter();
  
 	public GamePanel() {
-		
-		this.setBackground(Color.CYAN);
+		this.setBackground(Color.WHITE);
 		player = new Player();
 		setFocusable(true);
 		ImageIcon i = new ImageIcon("images/field.png");
 		background = i.getImage();          	
 
 		addMouseMotionListener(ma);
-   		addMouseListener(ma);    }
+   		addMouseListener(ma);    
+   	}
     
 	public void paint(Graphics g) {
 		super.paint(g);
