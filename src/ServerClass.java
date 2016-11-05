@@ -1,28 +1,32 @@
 import javax.swing.*;
 import java.io.*;
 import java.awt.*;
+import java.net.*;
 import javax.imageio.*;
 import java.awt.event.*;
 
 public class ServerClass extends JFrame implements Runnable, ActionListener {
-	private String portstr;
+    private String portstr;
     private String playersstr;
     private int portint;
     private int playerint;
 
-	private ChatServer chatServer;
+    private ChatServer chatServer;
 
-	private Background portBG;            //home panel
+    private Background portBG;            //home panel
     private Background homeBG;            //home panel
     private Background createdBG;         //exit server creation panel
 
     private JPanel front;               //base panel
+
     private JTextField portinput;
     private JTextField playerinput;
 
     private JButton nextButton;
     private JButton createButton;
     private JButton exitButton;
+
+    private JLabel serverAddress;
 
     private CardLayout cards;
 
@@ -36,7 +40,7 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
     private Image exitButtonImage;
 
     public ServerClass() {
-    	portBG = new Background();
+        portBG = new Background();
         homeBG = new Background();
         createdBG = new Background();
 
@@ -55,7 +59,7 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
 
         readImages();
     
-    	portBG.setLayout(null);
+        portBG.setLayout(null);
         homeBG.setLayout(null);
         createdBG.setLayout(null);     
 
@@ -92,7 +96,7 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
 
     // Load and set buttons
     private void loadButtons() {
-    	nextButton = new JButton(new ImageIcon(createButtonImage));
+        nextButton = new JButton(new ImageIcon(nextButtonImage));
         createButton = new JButton(new ImageIcon(createButtonImage));
         exitButton = new JButton(new ImageIcon(exitButtonImage));
 
@@ -122,16 +126,14 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
     }
 
     // Handle mouse clicks
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == nextButton) {            
+            portstr = portinput.getText();
+            try{    //try catch for port
+                portint = Integer.parseInt(portstr);
 
-    	//try catch for port
-    	if(e.getSource() == nextButton){    		
-    		portstr = portinput.getText();
-            try{
-            	portint = Integer.parseInt(portstr);
-
-            	if(portint >= 1024 && portint <= 65535){
-            		cards.show(front, "homeBG");
+                if(portint >= 1024 && portint <= 65535){
+                    cards.show(front, "homeBG");
                 }
                 else{
                     JOptionPane.showMessageDialog(this, "Port can be any number from 1024 to 65535");
@@ -140,31 +142,33 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
                 }
 
             } catch (Exception excp){
-                JOptionPane.showMessageDialog(this, "Port must be a whole number");
+                JOptionPane.showMessageDialog(this, "Invalid input! Port must be a whole number");
                 portinput.setText("");
                 return;
             }
-    	}
-
-    	//try catch for number of players
-        if (e.getSource() == createButton) {
+        } else if (e.getSource() == createButton) {    
             playersstr = playerinput.getText();
-            try{
+            try {    //try catch for number of players
                 playerint = Integer.parseInt(playersstr);
-                if(playerint >= 3){
+                if(playerint >= 3) {
                     cards.show(front, "createdBG");
+                    serverAddress = new JLabel(InetAddress.getLocalHost().getHostAddress());
+                    serverAddress.setSize(800, 100);
+                    serverAddress.setFont(
+                        new Font(serverAddress.getFont().getName(), 
+                            serverAddress.getFont().getStyle(), 100));
+                    serverAddress.setLocation(350, 300);
+                    createdBG.add(serverAddress);
                     chatServer = new ChatServer(portint, playerint);
                     chatServer.start();
-                }
-                else{
-                    JOptionPane.showMessageDialog(this, "Input must be greater than or equal to 3");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid input! Game requires a minimum of 3 players.");
                     playerinput.setText("");
                 }
-            } catch (Exception excp){
-                JOptionPane.showMessageDialog(this, "Input must be a whole number");
+            } catch (Exception excp) {
+                JOptionPane.showMessageDialog(this, "Invlaid input! Input must be a whole number");
                 playerinput.setText("");
             }
-            
         } else if (e.getSource() == exitButton) {
             System.exit(0);
         }
