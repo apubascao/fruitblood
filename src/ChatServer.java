@@ -16,7 +16,6 @@ public class ChatServer extends Thread {
         serverSocket = new ServerSocket(port);  // bind the port to a socket
         totalPlayers = num;
         sockets = new Socket[totalPlayers];    // create unconnected sockets
-        this.run();
     }
 
     public void run() {

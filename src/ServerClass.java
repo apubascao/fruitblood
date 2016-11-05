@@ -154,6 +154,7 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
                 if(playerint >= 3){
                     cards.show(front, "createdBG");
                     chatServer = new ChatServer(portint, playerint);
+                    chatServer.start();
                 }
                 else{
                     JOptionPane.showMessageDialog(this, "Input must be greater than or equal to 3");
