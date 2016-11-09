@@ -5,13 +5,13 @@ import java.net.*;
 import javax.imageio.*;
 import java.awt.event.*;
 
-public class ServerClass extends JFrame implements Runnable, ActionListener {
+public class ServerGUI extends JFrame implements ActionListener {
     private String portstr;
     private String playersstr;
     private int portint;
     private int playerint;
 
-    private ChatServer chatServer;
+    private Server server;
 
     private Background portBG;            //home panel
     private Background homeBG;            //home panel
@@ -34,17 +34,17 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
     private Image portImage;
     private Image homeImage;
     private Image createdImage;
-
     private Image nextButtonImage;
     private Image createButtonImage;
     private Image exitButtonImage;
 
-    public ServerClass() {
+    public ServerGUI() {
         portBG = new Background();
         homeBG = new Background();
         createdBG = new Background();
 
         front = new JPanel();
+
         portinput = new JTextField();
         playerinput = new JTextField();
 
@@ -129,19 +129,18 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == nextButton) {            
             portstr = portinput.getText();
-            try{    //try catch for port
+            try {    //try catch for port
                 portint = Integer.parseInt(portstr);
 
-                if(portint >= 1024 && portint <= 65535){
+                if (portint >= 1024 && portint <= 65535) {
                     cards.show(front, "homeBG");
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(this, "Port can be any number from 1024 to 65535");
                     portinput.setText("");
                     return;
                 }
 
-            } catch (Exception excp){
+            } catch (Exception excp) {
                 JOptionPane.showMessageDialog(this, "Invalid input! Port must be a whole number");
                 portinput.setText("");
                 return;
@@ -152,15 +151,24 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
                 playerint = Integer.parseInt(playersstr);
                 if(playerint >= 3) {
                     cards.show(front, "createdBG");
-                    serverAddress = new JLabel(InetAddress.getLocalHost().getHostAddress());
+
+                    //  Get ip address of server
+                    String address = InetAddress.getLocalHost().getHostAddress();
+                    /*System.out.println(address.substring(0, 3));
+                    while (address.substring(0, 3).equals("127") ||
+                        address.substring(0, 3).equals("192"))
+                        address = InetAddress.getLocalHost().getHostAddress();*/
+
+                    serverAddress = new JLabel(address);
                     serverAddress.setSize(800, 100);
                     serverAddress.setFont(
                         new Font(serverAddress.getFont().getName(), 
                             serverAddress.getFont().getStyle(), 100));
                     serverAddress.setLocation(350, 300);
                     createdBG.add(serverAddress);
-                    chatServer = new ChatServer(portint, playerint);
-                    chatServer.start();
+
+                    server = new Server(portint, playerint);
+                    server.start();
                 } else {
                     JOptionPane.showMessageDialog(this, "Invalid input! Game requires a minimum of 3 players.");
                     playerinput.setText("");
@@ -174,7 +182,7 @@ public class ServerClass extends JFrame implements Runnable, ActionListener {
         }
     }
 
-    public void run() {
-        
+    public static void main(String args[]) {
+        new ServerGUI();
     }
 }

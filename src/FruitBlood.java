@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.imageio.*;
 import java.awt.event.*;
 
-public class FruitBlood extends JFrame implements Runnable, ActionListener {
+public class FruitBlood extends JFrame implements ActionListener {
     private boolean end;
 
     private Background home; //home panel
@@ -30,16 +30,16 @@ public class FruitBlood extends JFrame implements Runnable, ActionListener {
     private Image mechanicsBG;
     private Image backBG;
 
-    private int current;
+    private Lobby lobby;
 
     public FruitBlood() {
         this.end = false;
 
-        current = 1;
-
         home = new Background();
         gameMechanics = new Background();
-        gameInstructions = new Background(); 
+        gameInstructions = new Background();
+
+        lobby = new Lobby();
 
         front = new JPanel();
 
@@ -50,9 +50,10 @@ public class FruitBlood extends JFrame implements Runnable, ActionListener {
         front.add(home, "home");
         front.add(gameMechanics, "mechanics");
         front.add(gameInstructions, "instructions");
+        front.add(lobby, "lobby");
         front.setPreferredSize(new Dimension(1250, 800));
 
-        readImages();
+        loadImages();
     
         home.setLayout(null);
         gameMechanics.setLayout(null);
@@ -68,7 +69,7 @@ public class FruitBlood extends JFrame implements Runnable, ActionListener {
     }
 
     // Read and set image background of components
-    private void readImages() {
+    private void loadImages() {
         try {
             // Panel Backgrounds
             homeBG = ImageIO.read(this.getClass().getResource("res/home.png"));
@@ -123,8 +124,10 @@ public class FruitBlood extends JFrame implements Runnable, ActionListener {
     }
 
     // Handle mouse clicks
-    public void actionPerformed(ActionEvent e){
-        if (e.getSource() == mechanics) {
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == start) {
+            cards.show(front, "lobby");
+        } else if (e.getSource() == mechanics) {
             cards.show(front, "mechanics");
         } else if (e.getSource() == instructions) {
             cards.show(front, "instructions");
@@ -133,7 +136,7 @@ public class FruitBlood extends JFrame implements Runnable, ActionListener {
         }
     }
 
-    public void run() {
-        
+    public static void main(String args[]){
+        new FruitBlood();
     }
 }
