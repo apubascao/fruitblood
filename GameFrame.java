@@ -21,7 +21,7 @@ class GameFrame extends JFrame{
 		Container c = getContentPane(); 
 		panel = new GamePanel();
 		c.add(panel);
-		this.setSize(1000,1000);
+		this.setSize(800,600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

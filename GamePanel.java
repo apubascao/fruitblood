@@ -19,7 +19,7 @@ class GamePanel extends JPanel{
 	MovingAdapter ma = new MovingAdapter();
  
 	public GamePanel() {
-		this.setBackground(Color.WHITE);
+		this.setBackground(Color.CYAN);
 		player = new Player();
 		setFocusable(true);
 		ImageIcon i = new ImageIcon("images/field.png");
@@ -33,24 +33,39 @@ class GamePanel extends JPanel{
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		g2d.drawImage(background, 1000-player.getFrameX(), 1000-player.getFrameY(), null);
+
+		//getWidth() and getHeight() return the size of the game frame
+		int tempX = ((getWidth()-4000)/2)+player.dx;
+		int tempY = ((getHeight()-4000)/2)+player.dy;
+		//4000 is the width and height of the background image
+		g2d.drawImage(background, tempX+player.getDx(), tempY+player.getDy(), null);
+		System.out.println("drawX = " + tempX + " drawY: " + tempY);
 		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);          
 	}
  
 	protected class MovingAdapter extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {
 			player.mousePressed(e);
-			}
+			System.out.println("PRESSED!");
+			System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
+		}
  
 		public void mouseDragged(MouseEvent e) {
 			player.mouseDragged(e);
 
-			
+			if(player.getX()!=0 || player.getX()!=4000 || player.getY()!=0 || player.getY()!=4000){
+				player.move();
+				System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
+				repaint();
 
-			player.move();
-			repaint();
-			
+			}else{
 
-			}
+			}			
+		}
+		public void mouseReleased(MouseEvent e) {
+			player.mouseReleased(e);
+			System.out.println("RELEASED!");
+			System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
+		}	
 	}
 }	
