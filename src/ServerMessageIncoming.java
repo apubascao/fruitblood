@@ -42,7 +42,4 @@ public class ServerMessageIncoming extends Thread {
                     System.out.println("Input/Ouput error occurs!");
                     System.exit(1);
                 }
-            }
-        }
-    }
-}
+      

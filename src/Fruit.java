@@ -6,7 +6,7 @@ public class Fruit extends JPanel {
 	private Image bg;
 
 	public void setImage(ImageIcon icon) {
-		bg = icon.getImage().getScaledInstance(500, 500, Image.SCALE_DEFAULT);
+		bg = icon.getImage().getScaledInstance(460, 460, Image.SCALE_DEFAULT);
 		repaint();
 	}
 
