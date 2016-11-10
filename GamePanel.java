@@ -17,6 +17,9 @@ class GamePanel extends JPanel{
 	Player player;
 	Image background;
 	MovingAdapter ma = new MovingAdapter();
+	//getWidth() and getHeight() return the size of the game frame
+	int tempX = ((getWidth()-4000)/2);
+	int tempY = ((getHeight()-4000)/2);
  
 	public GamePanel() {
 		this.setSize(800, 600);
@@ -33,14 +36,15 @@ class GamePanel extends JPanel{
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
-
-		//getWidth() and getHeight() return the size of the game frame
-		int tempX = ((getWidth()-4000)/2)+player.dx;
-		int tempY = ((getHeight()-4000)/2)+player.dy;
+		
 		//4000 is the width and height of the background image
-		g2d.drawImage(background, tempX+player.getDx(), tempY+player.getDy(), null);
+		g2d.drawImage(background, tempX, tempY, null);
+		System.out.println("dx: " + player.getDx() + " dy: " + player.getDy());
 		System.out.println("drawX = " + tempX + " drawY: " + tempY);
-		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);          
+		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
+
+		tempX = tempX+player.getDx();
+		tempY = tempY+player.getDy();          
 	}
  
 	protected class MovingAdapter extends MouseAdapter {
@@ -56,7 +60,7 @@ class GamePanel extends JPanel{
 
 			if(player.getX()!=0 || player.getX()!=4000 || player.getY()!=0 || player.getY()!=4000){
 				player.move();
-				System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
+				//System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
 				repaint();
 
 			}else{

@@ -64,12 +64,12 @@ class Player {
 	}
 
 	public void mouseDragged(MouseEvent e){
-		dx = e.getX() - x;
-		dy = e.getY() - y;
+		dx = (e.getX() - x)/30;
+		dy = (e.getY() - y)/30;
 
-		System.out.println("x: " + x + " y: " + y);
-		System.out.println("dx: " + dx + " dy: " + dy);
-		System.out.println("dx: " + getDx() + " dy: " + getDy());
+		//System.out.println("x: " + x + " y: " + y);
+		//System.out.println("dx: " + dx + " dy: " + dy);
+		//System.out.println("dx: " + getDx() + " dy: " + getDy());
 	}
 
 	public void mouseReleased(MouseEvent e){
