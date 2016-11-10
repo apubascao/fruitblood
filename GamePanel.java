@@ -18,8 +18,8 @@ class GamePanel extends JPanel{
 	Image background;
 	MovingAdapter ma = new MovingAdapter();
 	//getWidth() and getHeight() return the size of the game frame
-	int tempX = ((getWidth()-4000)/2);
-	int tempY = ((getHeight()-4000)/2);
+	int tempX = ((getWidth()-4000)/2)+400;
+	int tempY = ((getHeight()-4000)/2)+300;
  
 	public GamePanel() {
 		this.setSize(800, 600);
@@ -36,11 +36,15 @@ class GamePanel extends JPanel{
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
+
+		
+			g2d.drawImage(background, tempX, tempY, null);
+			System.out.println("dx: " + player.getDx() + " dy: " + player.getDy());
+			System.out.println("tempX = " + tempX + " tempY: " + tempY);
+		
 		
 		//4000 is the width and height of the background image
-		g2d.drawImage(background, tempX, tempY, null);
-		System.out.println("dx: " + player.getDx() + " dy: " + player.getDy());
-		System.out.println("drawX = " + tempX + " drawY: " + tempY);
+		
 		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
 
 		tempX = tempX+player.getDx();
@@ -50,27 +54,27 @@ class GamePanel extends JPanel{
 	protected class MovingAdapter extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {
 			player.mousePressed(e);
-			System.out.println("PRESSED!");
-			System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
+			//System.out.println("PRESSED!");
+			//System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
 		}
 	
  
 		public void mouseDragged(MouseEvent e) {
-			player.mouseDragged(e);
+			//System.out.println("--tempX = " + tempX + " tempY: " + tempY);
 
-			if(player.getX()!=0 || player.getX()!=4000 || player.getY()!=0 || player.getY()!=4000){
-				player.move();
-				//System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
-				repaint();
+			if( tempX > 400 || tempX < -3500 || tempY > 300 || tempY < -3600) {
 
 			}else{
-
-			}			
+				player.mouseDragged(e);player.move();
+				//System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
+				repaint();
+			}
+					
 		}
 		public void mouseReleased(MouseEvent e) {
 			player.mouseReleased(e);
-			System.out.println("RELEASED!");
-			System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
+			//System.out.println("RELEASED!");
+			//System.out.println("Current x = " + player.getX() + "Current y = " + player.getY());
 		}	
 
 	}
