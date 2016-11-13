@@ -13,15 +13,17 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-class Player {
-	int x, dx, y, dy, dd, frameX=800, frameY=600;
+public class Player {
+	int x, dx, y, dy, dd, frameX=1250, frameY=800;
 	Image playerImage;
 	int distance;
+	int tempX = ((1250-3750)/2);
+	int tempY = ((800-2400)/2);
  
 	public Player() {
-		ImageIcon i = new ImageIcon("images/banana.png");
+		ImageIcon i = new ImageIcon("images/fruit1.png");
 		playerImage = i.getImage();
-		x = 400;
+		x = 620;
 		y = 300;
 	}
  
@@ -64,10 +66,8 @@ class Player {
 	}
 
 	public void mouseDragged(MouseEvent e){
-		dx = (e.getX() - x)/30;
-		dy = (e.getY() - y)/30;
-
-		//System.out.println("tempXX = " + tempX);
+		dx = (e.getX() - x)/60;
+		dy = (e.getY() - y)/60;
 	}
 
 	public void mouseReleased(MouseEvent e){

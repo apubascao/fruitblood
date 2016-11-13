@@ -13,7 +13,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-class GameFrame extends JFrame{ 
+public class GameFrame extends JFrame{ 
 	GamePanel panel;
 	
 	public GameFrame(){ 
@@ -21,7 +21,7 @@ class GameFrame extends JFrame{
 		Container c = getContentPane(); 
 		panel = new GamePanel();
 		c.add(panel);
-		this.setSize(800,600);
+		this.setSize(1250,800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
