@@ -14,18 +14,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.util.Random;
 
-public class GoldenSeed {
-	Image goldenImage;
+public class Seed {
+	Image seedImage;
 	int z;
 	int[] x = new int[200];
 	int[] y = new int[200];
 	
-	public GoldenSeed(){
+	public Seed(){
 		Random randX = new Random();
 		Random randY = new Random();
-		ImageIcon i = new ImageIcon("images/gold.png");		
-		goldenImage = i.getImage();
-
+		ImageIcon i = new ImageIcon("res/seed.png");
+		seedImage = i.getImage();
+		
 		for(z=0; z<200; z++){
 			x[z] = randX.nextInt(11 - -2434)+11;
 			y[z] = randY.nextInt(-87 - -1637)+ -87;
@@ -41,6 +41,7 @@ public class GoldenSeed {
 	}
 
 	public Image getImage(){
-		return goldenImage;
+		return seedImage;
 	}
+
 }

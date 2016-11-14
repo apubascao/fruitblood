@@ -12,12 +12,16 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.imageio.*;
+import java.io.*;
 
-public class GamePanel extends JPanel{
+public class GamePanel extends Background {
 	Seed seed;
 	GoldenSeed goldenSeed;
 	Player player;
 	Image background;
+
+	private Image gameBG;
 
 	//PlayerListener mouseListener = new PlayerListener();
 	//this.addMouseListener(mouseListener);
@@ -32,13 +36,22 @@ public class GamePanel extends JPanel{
 	int gseedY;
 	JLabel score;
  
-	public GamePanel() {
+	public GamePanel(Player player) {
 		this.setLayout(null);
 		this.setSize(1250, 800);
-		this.setBackground(Color.WHITE);
-		player = new Player();
 		setFocusable(true);
-		ImageIcon i = new ImageIcon("images/game.png");
+
+		try {
+            // Panel Backgrounds
+            gameBG = ImageIO.read(this.getClass().getResource("res/galaxy.png"));
+        } catch(IOException ioe) {
+            System.out.println("Error while reading image file.");
+        }
+		this.setImage(new ImageIcon(gameBG));
+
+		this.player = player;
+		
+		ImageIcon i = new ImageIcon("res/game.png");
 		background = i.getImage();   
 		seed = new Seed();	
 		goldenSeed = new GoldenSeed();

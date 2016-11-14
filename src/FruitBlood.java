@@ -299,7 +299,7 @@ public class FruitBlood extends JFrame implements ActionListener {
             username = usernameField.getText();
 
             Game game = new Game(address, port, username, fruitChoice);
-
+            
             players.add(game);
             
             front.add(game, "game");

@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 
-public class Game extends Background {
+public class Game extends JLayeredPane {
     private String username;
     private int fruitChoice;
     private String message;
@@ -17,8 +17,8 @@ public class Game extends Background {
 
     private Thread messageOutgoing;
     private Thread messageIncoming;
-
-    private Image gameBG;
+    private Thread moveOutgoing;
+    private Thread moveIncoming;
 
     private JPanel chatbox;
 
@@ -28,6 +28,10 @@ public class Game extends Background {
 
     private JScrollPane scrollPane;
 
+    private Player player;
+
+    private GamePanel gamePanel;
+
     public Game(String address, int port, String username, int fruitChoice) {
         this.username = username;
         this.fruitChoice = fruitChoice;
@@ -35,6 +39,7 @@ public class Game extends Background {
 
         try {
             server = new Socket(address, port);   // creating a new socket for client and binding it to a port
+            player = new Player(address, port, username, fruitChoice);
         } catch (IOException e) {
             System.out.println("Cannot find (or disconnected from) Server");
         }
@@ -42,10 +47,12 @@ public class Game extends Background {
         renderGUI();
 
         loadChat();
+
+        loadGame(address, port);
     }
 
     private void renderGUI() {
-        this.setLayout(new BorderLayout());
+        gamePanel = new GamePanel(player);
 
         chatbox = new JPanel();
 
@@ -62,13 +69,6 @@ public class Game extends Background {
             }
         });
 
-        try {
-            // Panel Backgrounds
-            gameBG = ImageIO.read(this.getClass().getResource("res/game.png"));
-        } catch(IOException ioe) {
-            System.out.println("Error while reading image file.");
-        }
-
         convo.setEditable(false);
 
         chatField.setPreferredSize(new Dimension(300, 40));
@@ -76,13 +76,13 @@ public class Game extends Background {
         scrollPane.setPreferredSize(new Dimension(300, 200));
 
         chatbox.setLayout(new BoxLayout(chatbox, BoxLayout.Y_AXIS));
-        chatbox.setBorder(new EmptyBorder(600, 20, 20, 900));
-        chatbox.setOpaque(false);
+        chatbox.setBounds(20, 540, 300, 240);
         chatbox.add(scrollPane);
         chatbox.add(chatField);
+        chatbox.setOpaque(false);
 
-        this.setImage(new ImageIcon(gameBG));
-        this.add(chatbox, BorderLayout.CENTER);
+        this.add(chatbox, new Integer(2));
+        this.add(gamePanel, new Integer(1));
     }
 
     private void loadChat() {
@@ -121,8 +121,61 @@ public class Game extends Background {
         };
     }
 
+    private void loadGame(String address, int port){
+        moveOutgoing = new Thread() {
+            public void run(){
+                try {
+                    DatagramSocket socket = new DatagramSocket(port);
+                    while (true) {
+                        byte buffer[] = new byte[256];
+                        
+                        String dx = player.getDx() + "";
+                        String dy = player.getDy() + "";
+                        String username = player.getUsername();
+                        String size = player.getFruitSize() + "";
+
+                        String data = dx + "," + dy + "," + username + "," + size;
+
+                        buffer = data.getBytes();
+                    
+                        InetAddress ia = InetAddress.getByName(address);
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
+                        socket.send(packet);
+                    }
+                } catch (SocketException se) {
+                    System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
+                } catch (UnknownHostException ue) {
+                    System.out.println();
+                } catch (IOException ioe) {
+
+                }
+            }
+        };
+
+        moveIncoming = new Thread() {
+            public void run(){
+                try {
+                    DatagramSocket socket = new DatagramSocket(port);
+                    while (true) {
+                        byte buffer[] = new byte[256];
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                        socket.receive(packet);
+
+                        //TODO PARSE AND RENDERs
+                    }
+                } catch (SocketException se) {
+                    System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
+                } catch (IOException ioe) {
+                    System.out.println("Input/Ouput error occurs!");
+                }
+            }
+        };
+    }
+
     public void start() {
         messageOutgoing.start();
         messageIncoming.start();
+        /*moveOutgoing.start();
+        moveIncoming.start();*/
     }
 }
