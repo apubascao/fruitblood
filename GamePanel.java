@@ -21,10 +21,15 @@ public class GamePanel extends JPanel{
 	MovingAdapter ma = new MovingAdapter();
 	int tempX = ((getWidth()-3750)/2)+625;
 	int tempY = ((getHeight()-2400)/2)+400;
-	int prevX, prevY, z, seedX, seedY, gseedX, gseedY;
-
+	int prevX, prevY, z;
+	int seedX;
+	int seedY;
+	int gseedX;
+	int gseedY;
+	JLabel score;
  
 	public GamePanel() {
+		this.setLayout(null);
 		this.setSize(1250, 800);
 		this.setBackground(Color.CYAN);
 		player = new Player();
@@ -33,6 +38,13 @@ public class GamePanel extends JPanel{
 		background = i.getImage();   
 		seed = new Seed();	
 		goldenSeed = new GoldenSeed();
+		
+		score = new JLabel("SCORE");
+		score.setText("SCORE");
+		score.setPreferredSize(new Dimension(580,11));
+		score.setHorizontalAlignment(JLabel.CENTER);
+		score.setBackground(Color.RED);
+		add(score);
 
 		addMouseMotionListener(ma);
    		addMouseListener(ma);    
@@ -46,28 +58,22 @@ public class GamePanel extends JPanel{
 		System.out.println("dx: " + player.getDx() + " dy: " + player.getDy());
 		System.out.println("tempX = " + tempX + " tempY: " + tempY);
 			
-		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
-		    
-
 		for(z=0; z<200;z++){
 			seedX = seed.getX(z);
 			seedY = seed.getY(z);
-			g2d.drawImage(seed.getImage(), seedX, seedY, null);    
+			g2d.drawImage(seed.getImage(), tempX+seedX+600, tempY+seedY+500, null);    
 		}
 
 		for(z=0; z<20;z++){
 			gseedX = goldenSeed.getX(z);
 			gseedY = goldenSeed.getY(z);
-			g2d.drawImage(goldenSeed.getImage(), gseedX, gseedY, null);    
+			g2d.drawImage(goldenSeed.getImage(), tempX+gseedX+600, tempY+gseedY+500, null);    
 		}
 
-		gseedX = gseedX+player.getDx();
-		gseedY = gseedY+player.getDy();
-		seedX = seedX+player.getDx();
-		seedY = seedY+player.getDy();
-		tempX = tempX+player.getDx();
-		tempY = tempY+player.getDy();  
+		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
 
+		tempX = tempX+player.getDx();
+		tempY = tempY+player.getDy(); 
 	}
  
 	protected class MovingAdapter extends MouseAdapter {

@@ -23,18 +23,13 @@ public class GoldenSeed {
 	public GoldenSeed(){
 		Random randX = new Random();
 		Random randY = new Random();
-		ImageIcon i = new ImageIcon("images/gold.png");
-		
+		ImageIcon i = new ImageIcon("images/gold.png");		
 		goldenImage = i.getImage();
 
-		
 		for(z=0; z<200; z++){
 			x[z] = randX.nextInt(11 - -2434)+11;
 			y[z] = randY.nextInt(-87 - -1637)+ -87;
 		}
-
-
-
 	}
 
 	public int getX(int z){
@@ -48,5 +43,4 @@ public class GoldenSeed {
 	public Image getImage(){
 		return goldenImage;
 	}
-
 }
