@@ -19,9 +19,6 @@ public class GamePanel extends JPanel{
 	Player player;
 	Image background;
 
-	//PlayerListener mouseListener = new PlayerListener();
-	//this.addMouseListener(mouseListener);
-
 	MovingAdapter ma = new MovingAdapter();
 	int tempX = ((getWidth()-3750)/2)+625;
 	int tempY = ((getHeight()-2400)/2)+400;
@@ -76,8 +73,8 @@ public class GamePanel extends JPanel{
 
 		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
 
-		tempX = tempX+player.getDx();
-		tempY = tempY+player.getDy(); 
+		tempX = tempX-player.getDx();
+		tempY = tempY-player.getDy(); 
 	}
  
 	protected class MovingAdapter extends MouseAdapter {
