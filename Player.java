@@ -21,7 +21,6 @@ public class Player extends JPanel{
 	JLabel name;
  
 	public Player() {
-		this.setBackground(Color.BLACK);
 		x = 620;
 		y = 300;
 		name = new JLabel("apple");
@@ -71,7 +70,7 @@ public class Player extends JPanel{
 
 	}
 
-	public void mouseDragged(MouseEvent e){
+	public void mouseMoved(MouseEvent e){
 		dx = (e.getX() - x)/60;
 		dy = (e.getY() - y)/60;
 	}

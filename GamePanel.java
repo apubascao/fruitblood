@@ -18,6 +18,10 @@ public class GamePanel extends JPanel{
 	GoldenSeed goldenSeed;
 	Player player;
 	Image background;
+
+	//PlayerListener mouseListener = new PlayerListener();
+	//this.addMouseListener(mouseListener);
+
 	MovingAdapter ma = new MovingAdapter();
 	int tempX = ((getWidth()-3750)/2)+625;
 	int tempY = ((getHeight()-2400)/2)+400;
@@ -81,8 +85,8 @@ public class GamePanel extends JPanel{
 			player.mousePressed(e);
 		}
  
-		public void mouseDragged(MouseEvent e) {
-			player.mouseDragged(e);
+		public void mouseMoved(MouseEvent e) {
+			player.mouseMoved(e);
 			player.move();
 			repaint();
 		}
