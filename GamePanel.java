@@ -31,7 +31,7 @@ public class GamePanel extends JPanel{
 	public GamePanel() {
 		this.setLayout(null);
 		this.setSize(1250, 800);
-		this.setBackground(Color.CYAN);
+		this.setBackground(Color.WHITE);
 		player = new Player();
 		setFocusable(true);
 		ImageIcon i = new ImageIcon("images/game.png");
