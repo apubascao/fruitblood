@@ -13,6 +13,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.net.*;
+import java.io.*;
 
 public class Player extends JPanel{
 	private int x, dx, y, dy, dd, frameX=1250, frameY=800;
@@ -26,6 +27,7 @@ public class Player extends JPanel{
 	private int size;
 
 	private DatagramSocket ds;
+	private InetAddress ia;
 
 	private String address;
 	private int port;
@@ -45,16 +47,25 @@ public class Player extends JPanel{
 		height = 50;
 		width = 50;
 		score = 0;
-
 		
-
 		this.address = address;
 		this.port = port;
 		this.username = username;
 		this.fruitChoice = fruitChoice;
+		
+		
+		try{
+			ia = InetAddress.getByName(address);
+			ds = new DatagramSocket();
+		} catch (SocketException se) {
+			System.out.println("player1" + se);
+		} catch (UnknownHostException ue) {
+			System.out.println();
+		}		
 
 		ImageIcon i = new ImageIcon("res/fruit" + fruitChoice + ".png");
-		playerImage = i.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		playerImage = i.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);		
+		
 	}
  
 	public void move(){
@@ -106,9 +117,36 @@ public class Player extends JPanel{
 	public void mouseMoved(MouseEvent e){
 		dx = (e.getX() - x) / 60;
 		dy = (e.getY() - y) / 60;		
+		moveOutgoing();
 	}
 
 	public void mouseReleased(MouseEvent e){
 	
 	}
+	
+	
+	private void moveOutgoing(){	
+		try {			
+			byte buffer[] = new byte[256];
+			
+			String dx = this.getDx() + "";
+			String dy = this.getDy() + "";
+			String username = this.getUsername();
+			String size = this.getFruitSize() + "";
+
+			String data = dx + "," + dy + "," + username + "," + size;
+			
+			buffer = data.getBytes();
+					
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
+			ds.send(packet);			
+		} catch (SocketException se) {
+			System.out.println(se);
+		} catch (UnknownHostException ue) {
+			System.out.println();
+		} catch (IOException ioe) {
+
+		}
+	}
+	
 }

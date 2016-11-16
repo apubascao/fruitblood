@@ -167,7 +167,7 @@ public class ServerGUI extends JFrame implements ActionListener {
                     serverAddress.setLocation(350, 300);
                     createdBG.add(serverAddress);
 
-                    server = new Server(portint, playerint);
+                    server = new Server(portint, playerint, address);
                     server.start();
                 } else {
                     JOptionPane.showMessageDialog(this, "Invalid input! Game requires a minimum of 3 players.");

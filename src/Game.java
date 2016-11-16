@@ -31,6 +31,9 @@ public class Game extends JLayeredPane {
     private Player player;
 
     private GamePanel gamePanel;
+    
+    private String address;
+    private int port;
 
     public Game(String address, int port, String username, int fruitChoice) {
         this.username = username;
@@ -48,7 +51,10 @@ public class Game extends JLayeredPane {
 
         loadChat();
 
-        loadGame(address, port);
+		  this.address = address;
+		  this.port = port;
+		  
+        loadGame();
     }
 
     private void renderGUI() {
@@ -121,37 +127,7 @@ public class Game extends JLayeredPane {
         };
     }
 
-    private void loadGame(String address, int port){
-        moveOutgoing = new Thread() {
-            public void run(){
-                try {
-                    DatagramSocket socket = new DatagramSocket(port);
-                    while (true) {
-                        byte buffer[] = new byte[256];
-                        
-                        String dx = player.getDx() + "";
-                        String dy = player.getDy() + "";
-                        String username = player.getUsername();
-                        String size = player.getFruitSize() + "";
-
-                        String data = dx + "," + dy + "," + username + "," + size;
-
-                        buffer = data.getBytes();
-                    
-                        InetAddress ia = InetAddress.getByName(address);
-                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
-                        socket.send(packet);
-                    }
-                } catch (SocketException se) {
-                    System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
-                } catch (UnknownHostException ue) {
-                    System.out.println();
-                } catch (IOException ioe) {
-
-                }
-            }
-        };
-
+    private void loadGame(){
         moveIncoming = new Thread() {
             public void run(){
                 try {
@@ -161,6 +137,8 @@ public class Game extends JLayeredPane {
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                         socket.receive(packet);
 
+								String data = new String(packet.getData());
+								System.out.println("client received = " + data);
                         //TODO PARSE AND RENDERs
                     }
                 } catch (SocketException se) {
@@ -169,13 +147,12 @@ public class Game extends JLayeredPane {
                     System.out.println("Input/Ouput error occurs!");
                 }
             }
-        };
+        };		
     }
 
     public void start() {
         messageOutgoing.start();
         messageIncoming.start();
-        /*moveOutgoing.start();
-        moveIncoming.start();*/
+        moveIncoming.start();
     }
 }
