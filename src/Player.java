@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class Player extends JPanel{
 	private int x, dx, y, dy, dd, frameX=1250, frameY=800;
@@ -34,6 +35,8 @@ public class Player extends JPanel{
 	private String username;
 	private int fruitChoice;
 	private int score;
+	
+	private int playerSocket;
  
 	public Player(String address, int port, String username, int fruitChoice) {
 		x = 620;
@@ -64,8 +67,10 @@ public class Player extends JPanel{
 		}		
 
 		ImageIcon i = new ImageIcon("res/fruit" + fruitChoice + ".png");
-		playerImage = i.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);		
+		playerImage = i.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);
 		
+		Random rn = new Random();
+		playerSocket = rn.nextInt(65535 - 1024 + 1) + 1024;
 	}
  
 	public void move(){
@@ -105,6 +110,10 @@ public class Player extends JPanel{
 	public int getFruitSize(){
 		return size;
 	}
+	
+	public int getFruitChoice(){
+		return fruitChoice;
+	}
  		
 	public Image getImage(){
 		return playerImage;
@@ -125,7 +134,7 @@ public class Player extends JPanel{
 	}
 	
 	
-	private void moveOutgoing(){	
+	private void moveOutgoing(){
 		try {			
 			byte buffer[] = new byte[256];
 			
@@ -133,8 +142,9 @@ public class Player extends JPanel{
 			String dy = this.getDy() + "";
 			String username = this.getUsername();
 			String size = this.getFruitSize() + "";
-
-			String data = dx + "," + dy + "," + username + "," + size;
+			String fruitChoice = this.getFruitChoice() + "";
+						
+			String data = username + "," + fruitChoice + "," + size + "," + dx + "," + dy;
 			
 			buffer = data.getBytes();
 					
@@ -146,6 +156,27 @@ public class Player extends JPanel{
 			System.out.println();
 		} catch (IOException ioe) {
 
+		}
+	}
+	
+	public int getPlayerSocket(){
+		return playerSocket;
+	}
+	
+	public void sendPort(){
+		//INITIAL SEND TO SERVER TO GET THE PORT
+		try {
+			byte buffer[] = new byte[256];				
+			String data = username + "," + playerSocket;
+			buffer = data.getBytes();		
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
+			ds.send(packet);
+		} catch (SocketException se) {
+			System.out.println(se);
+		} catch (UnknownHostException ue) {
+			System.out.println();
+		} catch (IOException ioe) {
+		
 		}
 	}
 	

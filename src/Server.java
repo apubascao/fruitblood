@@ -9,25 +9,32 @@ import java.util.*;
 
 public class Server extends Thread {
     private ServerSocket serverSocket;
-    private Socket[] sockets;
+	private DatagramSocket socket;
+	
     private static int totalPlayers = 0;
 	
 	private Thread moveIncoming;
 	private int port;
 	private String address;
 	private InetAddress ia;
-	private InetAddress[] clientsIA;
+	
+	private Socket[] clients;
+	private InetAddress[] clientsIA;	
+	private int[] clientsPort;
 
     public Server(int port, int num, String address) throws IOException {
         serverSocket = new ServerSocket(port);  // bind the port to a socket
-        totalPlayers = num;
-        sockets = new Socket[totalPlayers];    // create unconnected sockets
+		socket = new DatagramSocket(port);
+        totalPlayers = 2;
+        clients = new Socket[totalPlayers];    // create unconnected sockets
 		
 		this.port = port;
 		this.address = address;
 		ia = InetAddress.getByName(address);
 
-		clientsIA = new InetAddress[totalPlayers];
+		clientsIA = new InetAddress[totalPlayers];		
+		clientsPort = new int[totalPlayers];
+		
 		startMI();
     }
 
@@ -35,7 +42,6 @@ public class Server extends Thread {
 		moveIncoming = new Thread() {
 			public void run(){
 				try {
-					DatagramSocket socket = new DatagramSocket(port);
 					while (true) {
 						//receive data from a player
 						byte buffer[] = new byte[256];
@@ -47,13 +53,13 @@ public class Server extends Thread {
 						//NOTE - CHECK IF WE NEED TO REMOVE THE SENDER, recursion
 						//send to all
 						for(int i = 0; i < totalPlayers; i++){
-							DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], port);
+							DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 							socket.send(tosend);
 							System.out.println(tosend);
 						}						
 					}
 				} catch (SocketException se) {
-					System.out.println(se);
+					System.out.println("server" + se);
 				} catch (IOException ioe) {
 					System.out.println("Input/Ouput error occurs!");
 				}
@@ -69,17 +75,32 @@ public class Server extends Thread {
 				
         while (count < totalPlayers) {  // check current player count
             try {
-                Socket server = serverSocket.accept();  // accept connection from client    
-                sockets[count] = server;
-                threads[count] = new ServerMessageIncoming(server); 
-				clientsIA[count] = server.getInetAddress();
+                Socket client = serverSocket.accept();  // accept connection from client    
+                clients[count] = client;
+                threads[count] = new ServerMessageIncoming(client); 
+				clientsIA[count] = client.getInetAddress();     
+				
+				
+				//for getting the port from the user
+				byte buffer[] = new byte[256];
+				DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+				socket.receive(packet);						
+				
+				String data = new String(packet.getData());
+				String[] dataArray = data.split(",");
+				System.out.println(dataArray[1]);
+				int playerPort = Integer.parseInt(dataArray[1].trim());
+				
+				clientsPort[count] = playerPort;
+				
                 count++;
                 System.out.println("Players: " + count + " / " + totalPlayers);              
-				System.out.println(server.getInetAddress());
             } catch (IOException e) {
-                System.out.println("Input/Output error occurs while waiting for a connection!");
+                System.out.println(e);
             }
-        }		
+        }	
+		
+		
 		
         for(int i = 0; i < totalPlayers; i++)
             threads[i].start();	

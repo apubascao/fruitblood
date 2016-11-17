@@ -49,11 +49,13 @@ public class Game extends JLayeredPane {
 
         renderGUI();
 
+		
         loadChat();
+		player.sendPort();
 
-		  this.address = address;
-		  this.port = port;
-		  
+		this.address = address;
+		this.port = port;
+		
         loadGame();
     }
 
@@ -131,14 +133,16 @@ public class Game extends JLayeredPane {
         moveIncoming = new Thread() {
             public void run(){
                 try {
-                    DatagramSocket socket = new DatagramSocket(port);
+					//HOW TO PASS PORT NUMBER FROM SERVER TO PLAYER
+                    DatagramSocket socket = new DatagramSocket(player.getPlayerSocket());
                     while (true) {
                         byte buffer[] = new byte[256];
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+						
                         socket.receive(packet);
 
-								String data = new String(packet.getData());
-								System.out.println("client received = " + data);
+						String data = new String(packet.getData());
+						System.out.println("client received = " + data);
                         //TODO PARSE AND RENDERs
                     }
                 } catch (SocketException se) {
