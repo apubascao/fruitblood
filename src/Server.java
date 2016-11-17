@@ -55,7 +55,6 @@ public class Server extends Thread {
 						for(int i = 0; i < totalPlayers; i++){
 							DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 							socket.send(tosend);
-							System.out.println(tosend);
 						}						
 					}
 				} catch (SocketException se) {

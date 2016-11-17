@@ -125,7 +125,8 @@ public class Player extends JPanel{
 
 	public void mouseMoved(MouseEvent e){
 		dx = (e.getX() - x) / 60;
-		dy = (e.getY() - y) / 60;		
+		dy = (e.getY() - y) / 60;	
+		
 		moveOutgoing();
 	}
 
@@ -144,7 +145,7 @@ public class Player extends JPanel{
 			String size = this.getFruitSize() + "";
 			String fruitChoice = this.getFruitChoice() + "";
 						
-			String data = username + "," + fruitChoice + "," + size + "," + dx + "," + dy;
+			String data = username + "," + fruitChoice + "," + size + "," + x + "," + y;
 			
 			buffer = data.getBytes();
 					

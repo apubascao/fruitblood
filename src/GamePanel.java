@@ -14,17 +14,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.imageio.*;
 import java.io.*;
+import java.util.*;
 
 public class GamePanel extends Background {
 	Seed seed;
 	GoldenSeed goldenSeed;
 	Player player;
-	Image background;
+	Image background;	
 
 	private Image gameBG;
-
-	//PlayerListener mouseListener = new PlayerListener();
-	//this.addMouseListener(mouseListener);
+	
+	private HashMap<String, String> players;
 
 	MovingAdapter ma = new MovingAdapter();
 	int tempX = ((getWidth()-3750)/2)+625;
@@ -37,6 +37,8 @@ public class GamePanel extends Background {
 	JLabel score;
  
 	public GamePanel(Player player) {
+		players = new HashMap<String, String>();
+		
 		this.setLayout(null);
 		this.setSize(1250, 800);
 		setFocusable(true);
@@ -69,28 +71,61 @@ public class GamePanel extends Background {
     
 	public void paint(Graphics g) {
 		super.paint(g);
-		Graphics2D g2d = (Graphics2D) g;
+		Graphics2D g2d = (Graphics2D) g;		
 		
 		g2d.drawImage(background, tempX, tempY, null);
-		System.out.println("dx: " + player.getDx() + " dy: " + player.getDy());
-		System.out.println("tempX = " + tempX + " tempY: " + tempY);
 			
 		for(z=0; z<200;z++){
 			seedX = seed.getX(z);
 			seedY = seed.getY(z);
-			g2d.drawImage(seed.getImage(), tempX+seedX+600, tempY+seedY+500, null);    
+			g2d.drawImage(seed.getImage(), tempX+seedX+50, tempY+seedY+150, null);    
 		}
 
 		for(z=0; z<20;z++){
 			gseedX = goldenSeed.getX(z);
 			gseedY = goldenSeed.getY(z);
-			g2d.drawImage(goldenSeed.getImage(), tempX+gseedX+600, tempY+gseedY+500, null);    
+			g2d.drawImage(goldenSeed.getImage(), tempX+gseedX+50, tempY+gseedY+150, null);    
 		}
 
 		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
 
-		tempX = tempX+player.getDx();
-		tempY = tempY+player.getDy(); 
+		tempX = tempX-player.getDx();
+		tempY = tempY-player.getDy(); 		
+		
+		//render all opponents
+		System.out.println(players.keySet());
+		for (Object value : players.values()) {
+			String data = value + "";
+			
+			System.out.println("data = " + data);
+			
+			String substring[] = data.split(",");
+
+			String username = substring[0].trim();		
+			String fruitChoice = substring[1].trim();
+			int size = Integer.parseInt(substring[2].trim());
+			int x = Integer.parseInt(substring[3].trim());
+			int y = Integer.parseInt(substring[4].trim());
+						
+			System.out.println("fruitChoice = " + fruitChoice);
+						
+			ImageIcon i = new ImageIcon("res/fruit" + fruitChoice + ".png");
+			Image playerImage = i.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT);			
+			
+			System.out.println(playerImage.getWidth(null));
+			
+			g2d.drawImage(playerImage, x, y, null);
+		}
+	
+	}
+
+	//String data = username + "," + fruitChoice + "," + size + "," + dx + "," + dy;
+	public void paintPlayer(String data){
+		String substring[] = data.split(",");
+		String username = substring[0];		
+		players.put(username, data);
+						
+		repaint();
 	}
  
 	protected class MovingAdapter extends MouseAdapter {
@@ -101,7 +136,7 @@ public class GamePanel extends Background {
 		public void mouseMoved(MouseEvent e) {
 			player.mouseMoved(e);
 			player.move();
-			repaint();
+			//repaint();
 		}
 
 		public void mouseReleased(MouseEvent e) {

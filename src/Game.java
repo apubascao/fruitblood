@@ -133,7 +133,6 @@ public class Game extends JLayeredPane {
         moveIncoming = new Thread() {
             public void run(){
                 try {
-					//HOW TO PASS PORT NUMBER FROM SERVER TO PLAYER
                     DatagramSocket socket = new DatagramSocket(player.getPlayerSocket());
                     while (true) {
                         byte buffer[] = new byte[256];
@@ -143,7 +142,10 @@ public class Game extends JLayeredPane {
 
 						String data = new String(packet.getData());
 						System.out.println("client received = " + data);
-                        //TODO PARSE AND RENDERs
+                        
+						
+						gamePanel.paintPlayer(data);
+						
                     }
                 } catch (SocketException se) {
                     System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
