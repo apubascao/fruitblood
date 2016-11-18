@@ -300,8 +300,8 @@ public class FruitBlood extends JFrame implements ActionListener {
 
             Game game = new Game(address, port, username, fruitChoice);
             
-            players.add(game);
-            
+            players.add(game);			
+			
             front.add(game, "game");
             cards.show(front, "game");
             

@@ -105,6 +105,21 @@ public class Server extends Thread {
             threads[i].start();	
 		
 		moveIncoming.start();
+		
+		//for letting the players know that all players are already connected
+		try{
+			for(int i = 0; i < totalPlayers; i++){
+			byte buffer[] = new byte[256];
+			DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+			socket.send(tosend);
+			}	
+		} catch (SocketException se) {
+			System.out.println("server" + se);
+		} catch (IOException ioe) {
+			System.out.println("Input/Ouput error occurs!");
+		}
+		
+		
 					
     }
 }

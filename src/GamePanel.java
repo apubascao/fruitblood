@@ -104,8 +104,8 @@ public class GamePanel extends Background {
 			String username = substring[0].trim();		
 			String fruitChoice = substring[1].trim();
 			int size = Integer.parseInt(substring[2].trim());
-			int x = Integer.parseInt(substring[3].trim());
-			int y = Integer.parseInt(substring[4].trim());
+			int dx = Integer.parseInt(substring[3].trim());
+			int dy = Integer.parseInt(substring[4].trim());
 						
 			System.out.println("fruitChoice = " + fruitChoice);
 						
@@ -114,7 +114,7 @@ public class GamePanel extends Background {
 			
 			System.out.println(playerImage.getWidth(null));
 			
-			g2d.drawImage(playerImage, x, y, null);
+			g2d.drawImage(playerImage, tempX-dx, tempY-dy, null);
 		}
 	
 	}

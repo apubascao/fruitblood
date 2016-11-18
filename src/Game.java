@@ -34,6 +34,8 @@ public class Game extends JLayeredPane {
     
     private String address;
     private int port;
+	
+	private DatagramSocket socket;
 
     public Game(String address, int port, String username, int fruitChoice) {
         this.username = username;
@@ -46,17 +48,30 @@ public class Game extends JLayeredPane {
         } catch (IOException e) {
             System.out.println("Cannot find (or disconnected from) Server");
         }
-
-        renderGUI();
-
 		
-        loadChat();
+		
+		loadChat();
 		player.sendPort();
 
 		this.address = address;
 		this.port = port;
 		
         loadGame();
+		
+		
+		try {
+			socket = new DatagramSocket(player.getPlayerSocket());
+			byte buffer[] = new byte[256];
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);			
+			socket.receive(packet);			
+		} catch (SocketException se) {
+			System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
+		} catch (IOException ioe) {
+			System.out.println("Input/Ouput error occurs!");		}
+				
+        renderGUI();
+		
+        
     }
 
     private void renderGUI() {
@@ -133,7 +148,6 @@ public class Game extends JLayeredPane {
         moveIncoming = new Thread() {
             public void run(){
                 try {
-                    DatagramSocket socket = new DatagramSocket(player.getPlayerSocket());
                     while (true) {
                         byte buffer[] = new byte[256];
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);

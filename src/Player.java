@@ -145,7 +145,7 @@ public class Player extends JPanel{
 			String size = this.getFruitSize() + "";
 			String fruitChoice = this.getFruitChoice() + "";
 						
-			String data = username + "," + fruitChoice + "," + size + "," + x + "," + y;
+			String data = username + "," + fruitChoice + "," + size + "," + dx + "," + dy;
 			
 			buffer = data.getBytes();
 					
