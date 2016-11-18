@@ -58,7 +58,6 @@ public class Game extends JLayeredPane {
 		
         loadGame();
 		
-		
 		try {
 			socket = new DatagramSocket(player.getPlayerSocket());
 			byte buffer[] = new byte[256];

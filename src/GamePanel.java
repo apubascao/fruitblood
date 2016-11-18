@@ -86,22 +86,17 @@ public class GamePanel extends Background {
                         
             System.out.println("fruitChoice = " + fruitChoice);
                         
-            ImageIcon i = new ImageIcon("res/fruit" + fruitChoice + ".png");
-            Image playerImage = i.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT);      
-            
-            System.out.println(playerImage.toString());
-            
-            g2d.drawImage(playerImage, x, y, null);
-        }
-    
+            ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + fruitChoice + ".png"));
+            g.drawImage(image.getImage(), x, y, 50, 50,this);
+        } 
     }
 
     //String data = username + "," + fruitChoice + "," + size + "," + dx + "," + dy;
     public void paintPlayer(String data){
         String substring[] = data.split(",");
-        String username = substring[0];     
+        String username = substring[0];
         players.put(username, data);
-                        
+
         repaint();
     }
 
