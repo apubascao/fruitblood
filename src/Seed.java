@@ -15,10 +15,10 @@ import javax.swing.JPanel;
 import java.util.Random;
 
 public class Seed {
-	Image seedImage;
-	int z;
-	int[] x = new int[200];
-	int[] y = new int[200];
+	private Image seedImage;
+	private int z;
+	private int[] x = new int[200];
+	private int[] y = new int[200];
 	
 	public Seed(){
 		Random randX = new Random();
@@ -26,9 +26,9 @@ public class Seed {
 		ImageIcon i = new ImageIcon("res/seed.png");
 		seedImage = i.getImage();
 		
-		for(z=0; z<200; z++){
-			x[z] = randX.nextInt(11 - -2434)+11;
-			y[z] = randY.nextInt(-87 - -1637)+ -87;
+		for(z = 0; z < 200; z++){
+			x[z] = randX.nextInt(1250);
+			y[z] = randY.nextInt(800);
 		}
 	}
 
