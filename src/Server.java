@@ -24,6 +24,7 @@ public class Server extends Thread {
 	private String[] clientsUsername;
 	
 	private int[][] seedCoordinates;
+	private int[][] playerCoordinates;
 	
 	private int numberSeeds;
 	
@@ -49,7 +50,12 @@ public class Server extends Thread {
 		for(int i = 0; i < 1250; i++)
 			for(int j = 0; j < 800; j++)
 				seedCoordinates[i][j] = -1;
-		
+			
+		playerCoordinates = new int [1250][800];
+		for(int i = 0; i < 1250; i++)
+			for(int j = 0; j < 800; j++)
+				playerCoordinates[i][j] = -1;
+			
 		initialCoordinates = null;
 		initialSeedCoordinates();
 		startMI();
@@ -77,7 +83,7 @@ public class Server extends Thread {
 							int x = Integer.parseInt(substring[4].trim());
 							int y = Integer.parseInt(substring[5].trim());
 							
-							//player ate a seed
+							//player ate a seed or ate an opponent
 							if(x-3 >= 0 && x+3 <= 1250 && y-3 >= 0 && y+3 <= 800){
 								for(int a = x-3; a < x+3; a++){
 									for(int b = y-3; b < y+3; b++){
@@ -114,25 +120,55 @@ public class Server extends Thread {
 											socket.send(ateseed);		
 											
 										}
+										
+										if(playerCoordinates[a][b] == 1){
+											
+										}
 									}
 								}
 							}
 							
-							
-							
-
-							/*
-							//player ate a player
-							*/
-							
+														
 							//player just moved
 							if(!playerAte) {
-								for(int i = 0; i < totalPlayers; i++){
+								for(int i = 0; i < totalPlayers; i++){									
+									playerCoordinates[x][y] = 1;
+									
 									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 									socket.send(tosend);
 								}
 							}							
-						}						
+						}
+
+						if(data.startsWith("ateopponent")){
+							String substring[] = data.split(",");
+							String username = substring[1].trim();      
+							
+							System.out.println(username + " inside ate");
+							
+							for(int i = 0; i < totalPlayers; i++){								
+								if(clientsUsername[i].equals(username)){
+									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+									socket.send(tosend);
+									break;
+								}
+							}
+						}
+						
+						if(data.startsWith("eaten")){
+							String substring[] = data.split(",");
+							String username = substring[1].trim();      
+							
+							System.out.println(username + " inside eaten");
+							
+							for(int i = 0; i < totalPlayers; i++){								
+								if(clientsUsername[i].equals(username)){
+									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+									socket.send(tosend);
+									break;
+								}
+							}								
+						}
 						
 					}
 				} catch (SocketException se) {

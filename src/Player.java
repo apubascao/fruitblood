@@ -91,6 +91,11 @@ public class Player extends JPanel{
 	public int getLife() {
 		return life;
 	}
+	
+	public void decreaseLife(){
+		life = life - 1;
+		System.out.println("ouch");
+	}
 
 	public String getAddress() {
 		return address;
@@ -107,8 +112,7 @@ public class Player extends JPanel{
     public void moveOutgoing() {
 		try {           
             byte buffer[] = new byte[256];
-            String data = "playermove," + username + "," + fruitChoice + "," + 
-                            size + "," + x + "," + y + "," + score;
+            String data = "playermove," + username + "," + fruitChoice + "," + size + "," + x + "," + y + "," + score + "," + life;
             buffer = data.getBytes();
                     
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
@@ -121,6 +125,10 @@ public class Player extends JPanel{
             System.out.println(ioe);
         }
     }
+	
+	public void moveOutgoing(String data){
+		
+	}
 
     public void sendPort(){
         //INITIAL SEND TO SERVER TO GET THE PORT
@@ -141,6 +149,13 @@ public class Player extends JPanel{
 	
 	public void ateSeed(){
 		score = score + 1;
+		
+		if(score % 10 == 0)
+			size = size + 25;
+	}
+	
+	public void ateOpponent(){
+		score = score + 5;
 		
 		if(score % 10 == 0)
 			size = size + 25;

@@ -21,8 +21,13 @@ public class GamePanel extends Background {
     private HashMap<String, String> players;
  
 	private int[][] seedCoordinates;
+	
+	private String address;
+    private int port;    
+    private DatagramSocket ds;
+	private InetAddress ia;	
  
-    public GamePanel(Player player) {
+    public GamePanel(Player player, String address, int port) {
         players = new HashMap<String, String>();
         
         this.setLayout(null);
@@ -53,6 +58,18 @@ public class GamePanel extends Background {
         addMouseMotionListener(new MouseMotionHandler());
 		
 		seedCoordinates = new int[1250][800];
+		
+		this.address = address;
+		this.port = port;
+		
+		try{
+            ia = InetAddress.getByName(address);
+            ds = new DatagramSocket();
+        } catch (SocketException se) {
+            System.out.println(se);
+        } catch (IOException ie) {
+            System.out.println(ie);
+        }
     }
     
     public void paint(Graphics g) {
@@ -100,8 +117,7 @@ public class GamePanel extends Background {
             ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + fruitChoice + ".png"));
             g2d.drawImage(image.getImage(), x, y, size, size,this);
             g.drawString(username, x - 20, y + 30); 
-            g.drawString(size + "", x + 10, y - 10);
-			
+            g.drawString(size + "", x + 10, y - 10);			
         } 
     }
 
@@ -134,6 +150,73 @@ public class GamePanel extends Background {
         public void mouseMoved(MouseEvent me) {
             player.setX(me.getX());
             player.setY(me.getY());
+			
+			
+			//eating an opponent
+			for (Object value : players.values()) {
+				String data = value + "";
+				
+				System.out.println("data = " + data);
+				
+				String substring[] = data.split(",");
+
+				String username = substring[1].trim();      
+				String fruitChoice = substring[2].trim();
+				int size = Integer.parseInt(substring[3].trim());
+				int x = Integer.parseInt(substring[4].trim());
+				int y = Integer.parseInt(substring[5].trim());
+				int score = Integer.parseInt(substring[6].trim());
+				int life = Integer.parseInt(substring[7].trim());
+			
+				//if they are on the same location
+				
+				byte buffer[];
+				String toSend;						
+				DatagramPacket packet;				
+				
+				try{
+					if(player.getX() == x && player.getY() == y){				
+						
+						if(player.getFruitSize() > size){
+							player.ateOpponent();
+							buffer = new byte[256];
+							toSend = "ateopponent," + player.getUsername(); 
+							buffer = toSend.getBytes();
+							packet = new DatagramPacket(buffer, buffer.length, ia, port);
+							ds.send(packet);
+							
+							
+							
+							life = life - 1;
+							buffer = new byte[256];
+							toSend = "eaten," + username; 
+							buffer = toSend.getBytes();
+							packet = new DatagramPacket(buffer, buffer.length, ia, port);
+							ds.send(packet);			
+						} 
+						if (player.getFruitSize() < size){						
+							score = score + 5;
+							buffer = new byte[256];
+							toSend = "ateopponent," + username; 
+							buffer = toSend.getBytes();
+							packet = new DatagramPacket(buffer, buffer.length, ia, port);
+							ds.send(packet);
+							
+							
+							player.decreaseLife();
+							buffer = new byte[256];
+							toSend = "eaten," + player.getUsername(); 
+							buffer = toSend.getBytes();
+							packet = new DatagramPacket(buffer, buffer.length, ia, port);
+							ds.send(packet);		
+						} 
+					}
+				} catch (SocketException se) {
+					System.out.println(se);
+				} catch (IOException ie) {
+					System.out.println(ie);
+				}								
+			}			
 
             player.moveOutgoing();
         }

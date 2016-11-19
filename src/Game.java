@@ -33,8 +33,7 @@ public class Game extends JLayeredPane {
     private GamePanel gamePanel;
     
     private String address;
-    private int port;
-    
+    private int port;    
     private DatagramSocket socket;
 
     public Game(String address, int port, String username, int fruitChoice) {
@@ -91,7 +90,7 @@ public class Game extends JLayeredPane {
             System.out.println("Input/Ouput error occurs!");      
 		}	
 		
-        gamePanel = new GamePanel(player);
+        gamePanel = new GamePanel(player, address, port);
 		
 		gamePanel.initialSeeds(data);
 
@@ -186,9 +185,13 @@ public class Game extends JLayeredPane {
 							player.ateSeed();
 						}
 						
-						/*
-						if ate a player
-						*/
+						if(data.startsWith("ateopponent")){
+							player.ateOpponent();
+						}
+						
+						if(data.startsWith("eaten")){
+							player.decreaseLife();
+						}
                         
                     }
                 } catch (SocketException se) {
