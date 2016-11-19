@@ -31,7 +31,7 @@ public class Server extends Thread {
     public Server(int port, int num, String address) throws IOException {
         serverSocket = new ServerSocket(port);  // bind the port to a socket
 		socket = new DatagramSocket(port);
-        totalPlayers = 2;
+        totalPlayers = num;
         clients = new Socket[totalPlayers];    // create unconnected sockets
 		
 		this.port = port;

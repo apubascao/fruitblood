@@ -71,7 +71,7 @@ public class GamePanel extends Background {
 		for(int i = 0; i < 1250; i++){
 			for(int j = 0; j < 800; j++){
 				if(seedCoordinates[i][j] == 1){
-					//g2d.drawImage(seed.getImage(), i, j, null); 
+					g2d.drawImage(seed.getImage(), i, j, null); 
 				}
 			}
 		}
