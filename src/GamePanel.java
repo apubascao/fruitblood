@@ -57,21 +57,12 @@ public class GamePanel extends Background {
     
     public void paint(Graphics g) {
         super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;        
-        
-        // render seed 
-		/*
-        for(int i = 0; i < 20; i++){
-            int seedX = seed.getX(i);
-            int seedY = seed.getY(i);
-            g2d.drawImage(seed.getImage(), seedX, seedY, null);    
-        }
-		*/
+        Graphics2D g2d = (Graphics2D) g;     
 		
 		for(int i = 0; i < 1250; i++){
 			for(int j = 0; j < 800; j++){
 				if(seedCoordinates[i][j] == 1){
-					g2d.drawImage(seed.getImage(), i, j, null); 
+					g2d.drawImage(seed.getImage(), i, j, 25, 25, null); 
 				}
 			}
 		}
@@ -120,6 +111,22 @@ public class GamePanel extends Background {
 
         repaint();
     }
+	
+	public void paintSeed(String data){
+		String substring[] = data.split(",");
+		
+		int x = Integer.parseInt(substring[1].trim());
+		int y = Integer.parseInt(substring[2].trim());
+		
+		seedCoordinates[x][y] = -1;
+		
+		x = Integer.parseInt(substring[3].trim());
+		y = Integer.parseInt(substring[4].trim());
+		
+		seedCoordinates[x][y] = 1;
+
+        repaint();
+	}
 
     class MouseMotionHandler extends MouseMotionAdapter {
         public void mouseMoved(MouseEvent me) {

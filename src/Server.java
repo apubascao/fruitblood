@@ -64,6 +64,9 @@ public class Server extends Thread {
 						socket.receive(packet);						
 						
 						String data = new String(packet.getData());						
+						//System.out.println(data);
+						
+						Boolean playerAte = false;
 						
 						if(data.startsWith("playermove")){							
 							String substring[] = data.split(",");
@@ -74,42 +77,58 @@ public class Server extends Thread {
 							int y = Integer.parseInt(substring[5].trim());
 							
 							//player ate a seed
-							if(seedCoordinates[x][y] == 1){								
-								int[] newCoordinates = newSeedCoordinate();
-								seedCoordinates[x][y] = -1;								
-								
-								byte seedupdatebuffer[] = new byte[256];
-								String seedupdatedata = "seedupdate," + newCoordinates[0] + "," + newCoordinates[1];
-								seedupdatebuffer = seedupdatedata.getBytes();	
-								
-								int arrayPosition = -1;
-								
-								//send to all
-								for(int i = 0; i < totalPlayers; i++){
-									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
-									socket.send(tosend);
-									
-									DatagramPacket seedupdate = new DatagramPacket(seedupdatebuffer, seedupdatebuffer.length, clientsIA[i], clientsPort[i]);
-									socket.send(seedupdate);
-									
-									if(clientsIA[i] == packet.getAddress())
-										arrayPosition = i;
+							if(x-3 >= 0 && x+3 <= 1250 && y-3 >= 0 && y+3 <= 800){
+								for(int a = x-3; a < x+3; a++){
+									for(int b = y-3; b < y+3; b++){
+										if(seedCoordinates[a][b] == 1){
+											
+											playerAte = true;
+										
+											int[] newCoordinates = newSeedCoordinate(a, b);
+											seedCoordinates[a][b] = -1;									
+											
+											byte seedupdatebuffer[] = new byte[256];
+											String seedupdatedata = "seedupdate," + a + "," + b + "," + newCoordinates[0] + "," + newCoordinates[1];
+											System.out.println(seedupdatedata);
+											seedupdatebuffer = seedupdatedata.getBytes();	
+											
+											int arrayPosition = -1;
+											
+											//send to all
+											for(int i = 0; i < totalPlayers; i++){
+												DatagramPacket seedupdate = new DatagramPacket(seedupdatebuffer, seedupdatebuffer.length, clientsIA[i], clientsPort[i]);
+												socket.send(seedupdate);
+												
+												DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+												socket.send(tosend);
+												
+												if(clientsIA[i] == packet.getAddress())
+													arrayPosition = i;
+											}
+											
+											/*
+											//inform the player that ate a seed
+											byte playerupdatebuffer[] = new byte[256];
+											String playerupdatedata = "ateseed";
+											playerupdatebuffer = playerupdatedata.getBytes();								
+											DatagramPacket ateseed = new DatagramPacket(playerupdatebuffer, playerupdatebuffer.length, clientsIA[arrayPosition], clientsPort[arrayPosition]);
+											socket.send(ateseed);								
+											*/
+											
+										}
+									}
 								}
-								
-								//inform the player that ate a seed
-								byte playerupdatebuffer[] = new byte[256];
-								String playerupdatedata = "ateseed";
-								playerupdatebuffer = playerupdatedata.getBytes();								
-								DatagramPacket ateseed = new DatagramPacket(playerupdatebuffer, playerupdatebuffer.length, clientsIA[arrayPosition], clientsPort[arrayPosition]);
-								socket.send(ateseed);								
 							}
+							
+							
+							
 
 							/*
 							//player ate a player
 							*/
 							
 							//player just moved
-							else {
+							if(!playerAte) {
 								for(int i = 0; i < totalPlayers; i++){
 									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 									socket.send(tosend);
@@ -128,7 +147,7 @@ public class Server extends Thread {
 	}	
 	
 	
-	private int[] newSeedCoordinate(){
+	private int[] newSeedCoordinate(int a, int b){
 		int[] toReturn = new int[2];
 		
 		Random rn = new Random();		
@@ -141,6 +160,7 @@ public class Server extends Thread {
 			if(seedCoordinates[x][y] == -1){
 				toReturn[0] = x;
 				toReturn[1] = y;
+				seedCoordinates[a][b] = -1;
 				seedCoordinates[x][y] = 1;
 				break;
 			}
@@ -169,6 +189,8 @@ public class Server extends Thread {
 				
 				else
 					initialCoordinates = initialCoordinates + "," + x + "," + y;	
+				
+				System.out.println(x + " " + y);
 			}			
 		}
 	}

@@ -177,6 +177,10 @@ public class Game extends JLayeredPane {
 						if(data.startsWith("playermove")){
 							gamePanel.paintPlayer(data);
 						}
+						
+						if(data.startsWith("seedupdate")){
+							gamePanel.paintSeed(data);
+						}
 
 						if(data.startsWith("ateseed")){
 							player.ateSeed();
