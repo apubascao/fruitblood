@@ -57,18 +57,12 @@ public class Game extends JLayeredPane {
         
         loadGame();
         
-        try {
-            socket = new DatagramSocket(player.getPlayerSocket());
-            byte buffer[] = new byte[256];
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-			
-			//for initial coordinates of seeds
-           socket.receive(packet);
-           String data = new String(packet.getData());
-		   System.out.println(data);
-			
-			//gamePanel.initialSeeds(new String(packet.getData()));			
-			
+		
+        try {			
+			socket = new DatagramSocket(player.getPlayerSocket());
+			byte buffer[] = new byte[256];
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+		
 			//for starting the game
 			socket.receive(packet);
         } catch (SocketException se) {
@@ -81,7 +75,25 @@ public class Game extends JLayeredPane {
     }
 
     private void renderGUI() {
+		String data = null; 
+		try {
+			byte buffer[] = new byte[256];
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+			
+			//for initial coordinates of seeds
+			socket.receive(packet);
+			data = new String(packet.getData());
+			System.out.println("DATA = " + data);
+			
+        } catch (SocketException se) {
+            System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
+        } catch (IOException ioe) {
+            System.out.println("Input/Ouput error occurs!");      
+		}	
+		
         gamePanel = new GamePanel(player);
+		
+		gamePanel.initialSeeds(data);
 
         chatbox = new JPanel();
 

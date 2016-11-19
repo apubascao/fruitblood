@@ -133,9 +133,13 @@ public class GamePanel extends Background {
 	public void initialSeeds(String data){
 		String[] dataArray = data.split(",");
 		
-		for(int i = 0; i < dataArray.length/2; i++){
+		System.out.println("DA = " + dataArray.length);
+		
+		for(int i = 0; i < dataArray.length; i = i + 2){
 			int x = Integer.parseInt(dataArray[i].trim());
 			int y = Integer.parseInt(dataArray[i+1].trim());			
+			
+			System.out.println("x y = " +  x + " " + y);
 			
 			seedCoordinates[x][y] = 1;
 		}

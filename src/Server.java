@@ -151,7 +151,7 @@ public class Server extends Thread {
 	
 	
 	private void initialSeedCoordinates(){
-		int num = 1;
+		int num = 0;
 		
 		Random rn = new Random();		
 		int x, y;
@@ -167,7 +167,8 @@ public class Server extends Thread {
 				if(initialCoordinates == null)
 					initialCoordinates = x + "," + y;				
 				
-				initialCoordinates = initialCoordinates + "," + x + "," + y;	
+				else
+					initialCoordinates = initialCoordinates + "," + x + "," + y;	
 			}			
 		}
 	}
@@ -218,15 +219,15 @@ public class Server extends Thread {
 		//for letting the players know that all players are already connected
 		try{
 			for(int i = 0; i < totalPlayers; i++){
-			byte buffer[] = new byte[256];
-			
-			//sending initial seed coordinates
-			buffer = initialCoordinates.getBytes();			
-			DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
-			socket.send(tosend);
+			byte buffer[] = new byte[256];			
 			
 			//sending go signal
 			buffer = new byte[256];
+			DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+			socket.send(tosend);
+			
+			//sending initial seed coordinates
+			buffer = initialCoordinates.getBytes();			
 			tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 			socket.send(tosend);
 			
