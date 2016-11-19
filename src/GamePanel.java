@@ -93,13 +93,16 @@ public class GamePanel extends Background {
             int size = Integer.parseInt(substring[3].trim());
             int x = Integer.parseInt(substring[4].trim());
             int y = Integer.parseInt(substring[5].trim());
+			int score = Integer.parseInt(substring[6].trim());
                         
             System.out.println("fruitChoice = " + fruitChoice);
                         
             ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + fruitChoice + ".png"));
             g2d.drawImage(image.getImage(), x, y, size, size,this);
             g.drawString(username, x - 20, y + 30); 
-            g.drawString(size + "", x + 10, y - 10);
+            //g.drawString(size + "", x + 10, y - 10);
+			g.drawString(score + "", x + 10, y - 10);
+			
         } 
     }
 

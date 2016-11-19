@@ -108,7 +108,7 @@ public class Player extends JPanel{
 		try {           
             byte buffer[] = new byte[256];
             String data = "playermove," + username + "," + fruitChoice + "," + 
-                            size + "," + x + "," + y;
+                            size + "," + x + "," + y + "," + score;
             buffer = data.getBytes();
                     
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
@@ -140,6 +140,6 @@ public class Player extends JPanel{
     }
 	
 	public void ateSeed(){
-		System.out.println("wooo ate a seed");
+		score = score + 1;
 	}
 }

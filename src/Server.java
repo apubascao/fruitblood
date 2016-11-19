@@ -21,6 +21,7 @@ public class Server extends Thread {
 	private Socket[] clients;
 	private InetAddress[] clientsIA;	
 	private int[] clientsPort;
+	private String[] clientsUsername;
 	
 	private int[][] seedCoordinates;
 	
@@ -40,6 +41,7 @@ public class Server extends Thread {
 
 		clientsIA = new InetAddress[totalPlayers];		
 		clientsPort = new int[totalPlayers];
+		clientsUsername = new String[totalPlayers];
 		
 		//to scale the number of seeds against the number of players
 		numberSeeds = totalPlayers * 5;
@@ -64,7 +66,6 @@ public class Server extends Thread {
 						socket.receive(packet);						
 						
 						String data = new String(packet.getData());						
-						//System.out.println(data);
 						
 						Boolean playerAte = false;
 						
@@ -89,7 +90,6 @@ public class Server extends Thread {
 											
 											byte seedupdatebuffer[] = new byte[256];
 											String seedupdatedata = "seedupdate," + a + "," + b + "," + newCoordinates[0] + "," + newCoordinates[1];
-											System.out.println(seedupdatedata);
 											seedupdatebuffer = seedupdatedata.getBytes();	
 											
 											int arrayPosition = -1;
@@ -102,18 +102,16 @@ public class Server extends Thread {
 												DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 												socket.send(tosend);
 												
-												if(clientsIA[i] == packet.getAddress())
+												if(clientsUsername[i].equals(username))
 													arrayPosition = i;
 											}
 											
-											/*
 											//inform the player that ate a seed
 											byte playerupdatebuffer[] = new byte[256];
 											String playerupdatedata = "ateseed";
 											playerupdatebuffer = playerupdatedata.getBytes();								
 											DatagramPacket ateseed = new DatagramPacket(playerupdatebuffer, playerupdatebuffer.length, clientsIA[arrayPosition], clientsPort[arrayPosition]);
-											socket.send(ateseed);								
-											*/
+											socket.send(ateseed);		
 											
 										}
 									}
@@ -138,9 +136,9 @@ public class Server extends Thread {
 						
 					}
 				} catch (SocketException se) {
-					System.out.println("server" + se);
+					System.out.println(se);
 				} catch (IOException ioe) {
-					System.out.println("Input/Ouput error occurs!");
+					System.out.println(ioe);
 				}
 			}
 		};
@@ -189,8 +187,6 @@ public class Server extends Thread {
 				
 				else
 					initialCoordinates = initialCoordinates + "," + x + "," + y;	
-				
-				System.out.println(x + " " + y);
 			}			
 		}
 	}
@@ -219,9 +215,12 @@ public class Server extends Thread {
 				//for checking if correct data
 				if(data.startsWith("sendport")){			
 					String[] dataArray = data.split(",");
+					
+					String playerUsername = dataArray[1].trim();
 					int playerPort = Integer.parseInt(dataArray[2].trim());
 					
 					clientsPort[count] = playerPort;
+					clientsUsername[count] = playerUsername;
 					
 					count++;
 					System.out.println("Players: " + count + " / " + totalPlayers); 					
@@ -255,9 +254,9 @@ public class Server extends Thread {
 			
 			}	
 		} catch (SocketException se) {
-			System.out.println("server" + se);
+			System.out.println(se);
 		} catch (IOException ioe) {
-			System.out.println("Input/Ouput error occurs!");
+			System.out.println(ioe);
 		}
 		
 		
