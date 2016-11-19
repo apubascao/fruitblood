@@ -126,10 +126,6 @@ public class Player extends JPanel{
         }
     }
 	
-	public void moveOutgoing(String data){
-		
-	}
-
     public void sendPort(){
         //INITIAL SEND TO SERVER TO GET THE PORT
         try {

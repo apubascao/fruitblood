@@ -24,7 +24,6 @@ public class Server extends Thread {
 	private String[] clientsUsername;
 	
 	private int[][] seedCoordinates;
-	private int[][] playerCoordinates;
 	
 	private int numberSeeds;
 	
@@ -50,11 +49,6 @@ public class Server extends Thread {
 		for(int i = 0; i < 1250; i++)
 			for(int j = 0; j < 800; j++)
 				seedCoordinates[i][j] = -1;
-			
-		playerCoordinates = new int [1250][800];
-		for(int i = 0; i < 1250; i++)
-			for(int j = 0; j < 800; j++)
-				playerCoordinates[i][j] = -1;
 			
 		initialCoordinates = null;
 		initialSeedCoordinates();
@@ -117,13 +111,9 @@ public class Server extends Thread {
 											String playerupdatedata = "ateseed";
 											playerupdatebuffer = playerupdatedata.getBytes();								
 											DatagramPacket ateseed = new DatagramPacket(playerupdatebuffer, playerupdatebuffer.length, clientsIA[arrayPosition], clientsPort[arrayPosition]);
-											socket.send(ateseed);		
-											
+											socket.send(ateseed);											
 										}
 										
-										if(playerCoordinates[a][b] == 1){
-											
-										}
 									}
 								}
 							}
@@ -132,8 +122,6 @@ public class Server extends Thread {
 							//player just moved
 							if(!playerAte) {
 								for(int i = 0; i < totalPlayers; i++){									
-									playerCoordinates[x][y] = 1;
-									
 									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 									socket.send(tosend);
 								}
