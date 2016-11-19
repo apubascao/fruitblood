@@ -100,8 +100,7 @@ public class GamePanel extends Background {
             ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + fruitChoice + ".png"));
             g2d.drawImage(image.getImage(), x, y, size, size,this);
             g.drawString(username, x - 20, y + 30); 
-            //g.drawString(size + "", x + 10, y - 10);
-			g.drawString(score + "", x + 10, y - 10);
+            g.drawString(size + "", x + 10, y - 10);
 			
         } 
     }
