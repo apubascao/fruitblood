@@ -14,12 +14,11 @@ public class Player extends JPanel{
 	private InetAddress ia;
 
 	private int x, y;
-	private int height;
-	private int width;
 	private int size;
 	private int port;
 	private int fruitChoice;
 	private int score;
+	private int life;
 	private int playerSocket;
 
 	private String address;
@@ -32,10 +31,9 @@ public class Player extends JPanel{
 		this.username = username;
 		this.fruitChoice = fruitChoice;
 
-		size = 1;
-		height = 50;
-		width = 50;
-		score = 0;	
+		size = 50;
+		score = 0;
+		life = 3;
 
 		try{
             ia = InetAddress.getByName(address);
@@ -47,7 +45,7 @@ public class Player extends JPanel{
         }   
 
 		ImageIcon i = new ImageIcon("res/fruit" + fruitChoice + ".png");
-		playerImage = i.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);
+		playerImage = i.getImage().getScaledInstance(size, size, Image.SCALE_DEFAULT);
 
 		Random rn = new Random();
         playerSocket = rn.nextInt(65535 - 1024 + 1) + 1024;
@@ -84,6 +82,14 @@ public class Player extends JPanel{
  		
 	public Image getImage(){
 		return playerImage;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public int getLife() {
+		return life;
 	}
 
 	public String getAddress() {

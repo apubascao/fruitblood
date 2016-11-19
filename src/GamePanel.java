@@ -54,22 +54,25 @@ public class GamePanel extends Background {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;        
-            
+        
+        // render seed    
         for(int i = 0; i < 20; i++){
             int seedX = seed.getX(i);
             int seedY = seed.getY(i);
             g2d.drawImage(seed.getImage(), seedX, seedY, null);    
         }
 
+        // render golden seed
         for(int i = 0; i < 5; i++){
             int gseedX = goldenSeed.getX(i);
             int gseedY = goldenSeed.getY(i);
             g2d.drawImage(goldenSeed.getImage(), gseedX, gseedY, null);    
         }
 
-        g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
+        // render player's score
+        g.drawString(player.getScore() + "", 50, 50);
 
-        //render all opponents
+        //render all players
         System.out.println(players.keySet());
         for (Object value : players.values()) {
             String data = value + "";
@@ -87,7 +90,9 @@ public class GamePanel extends Background {
             System.out.println("fruitChoice = " + fruitChoice);
                         
             ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + fruitChoice + ".png"));
-            g.drawImage(image.getImage(), x, y, 50, 50,this);
+            g2d.drawImage(image.getImage(), x, y, size, size,this);
+            g.drawString(username, x - 20, y + 30); 
+            g.drawString(size + "", x + 10, y - 10);
         } 
     }
 

@@ -1,9 +1,11 @@
-import javax.swing.*;
-import java.io.*;
 import java.awt.*;
-import java.net.*;
-import javax.imageio.*;
 import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+import java.util.Enumeration;
+
+import javax.imageio.*;
+import javax.swing.*;
 
 public class ServerGUI extends JFrame implements ActionListener {
     private String portstr;
@@ -152,13 +154,23 @@ public class ServerGUI extends JFrame implements ActionListener {
                 if(playerint >= 3) {
                     cards.show(front, "createdBG");
 
+                    String address = "localhost";
                     //  Get ip address of server
-                    String address = InetAddress.getLocalHost().getHostAddress();
-                    /*System.out.println(address.substring(0, 3));
-                    while (address.substring(0, 3).equals("127") ||
-                        address.substring(0, 3).equals("192"))
-                        address = InetAddress.getLocalHost().getHostAddress();*/
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                        NetworkInterface intf = en.nextElement();
 
+                        Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses();
+                        while(enumIpAddr.hasMoreElements()) {
+                            address = enumIpAddr.nextElement().toString();
+                            if (address.length() <= 15 && !address.substring(1, 4).equals("127"))
+                                break;
+                        }
+
+                        if (address.length() <= 15 && !address.substring(1, 4).equals("127"))
+                            break;
+                    }
+
+                    address = address.substring(1, address.length());
                     serverAddress = new JLabel(address);
                     serverAddress.setSize(800, 100);
                     serverAddress.setFont(
@@ -174,7 +186,7 @@ public class ServerGUI extends JFrame implements ActionListener {
                     playerinput.setText("");
                 }
             } catch (Exception excp) {
-                JOptionPane.showMessageDialog(this, "Invlaid input! Input must be a whole number");
+                JOptionPane.showMessageDialog(this, "Invalid input! Input must be a whole number");
                 playerinput.setText("");
             }
         } else if (e.getSource() == exitButton) {
