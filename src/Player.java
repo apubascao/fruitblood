@@ -141,5 +141,8 @@ public class Player extends JPanel{
 	
 	public void ateSeed(){
 		score = score + 1;
+		
+		if(score % 10 == 0)
+			size = size + 25;
 	}
 }
