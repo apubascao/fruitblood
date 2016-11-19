@@ -21,11 +21,17 @@ public class Server extends Thread {
 	private Socket[] clients;
 	private InetAddress[] clientsIA;	
 	private int[] clientsPort;
+	
+	private int[][] seedCoordinates;
+	
+	private int numberSeeds;
+	
+	private String initialCoordinates;
 
     public Server(int port, int num, String address) throws IOException {
         serverSocket = new ServerSocket(port);  // bind the port to a socket
 		socket = new DatagramSocket(port);
-        totalPlayers = num;
+        totalPlayers = 2;
         clients = new Socket[totalPlayers];    // create unconnected sockets
 		
 		this.port = port;
@@ -35,6 +41,15 @@ public class Server extends Thread {
 		clientsIA = new InetAddress[totalPlayers];		
 		clientsPort = new int[totalPlayers];
 		
+		//to scale the number of seeds against the number of players
+		numberSeeds = totalPlayers * 5;
+		seedCoordinates = new int [1250][800];
+		for(int i = 0; i < 1250; i++)
+			for(int j = 0; j < 800; j++)
+				seedCoordinates[i][j] = -1;
+		
+		initialCoordinates = null;
+		initialSeedCoordinates();
 		startMI();
     }
 
@@ -48,14 +63,60 @@ public class Server extends Thread {
 						DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 						socket.receive(packet);						
 						
-						String data = new String(packet.getData());
-						System.out.println("server received = " + data);
-						//NOTE - CHECK IF WE NEED TO REMOVE THE SENDER, recursion
-						//send to all
-						for(int i = 0; i < totalPlayers; i++){
-							DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
-							socket.send(tosend);
+						String data = new String(packet.getData());						
+						
+						if(data.startsWith("playermove")){							
+							String substring[] = data.split(",");
+							String username = substring[1].trim();      
+							String fruitChoice = substring[2].trim();
+							int size = Integer.parseInt(substring[3].trim());
+							int x = Integer.parseInt(substring[4].trim());
+							int y = Integer.parseInt(substring[5].trim());
+							
+							//player ate a seed
+							if(seedCoordinates[x][y] == 1){								
+								int[] newCoordinates = newSeedCoordinate();
+								seedCoordinates[x][y] = -1;								
+								
+								byte seedupdatebuffer[] = new byte[256];
+								String seedupdatedata = "seedupdate," + newCoordinates[0] + "," + newCoordinates[1];
+								seedupdatebuffer = seedupdatedata.getBytes();	
+								
+								int arrayPosition = -1;
+								
+								//send to all
+								for(int i = 0; i < totalPlayers; i++){
+									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+									socket.send(tosend);
+									
+									DatagramPacket seedupdate = new DatagramPacket(seedupdatebuffer, seedupdatebuffer.length, clientsIA[i], clientsPort[i]);
+									socket.send(seedupdate);
+									
+									if(clientsIA[i] == packet.getAddress())
+										arrayPosition = i;
+								}
+								
+								//inform the player that ate a seed
+								byte playerupdatebuffer[] = new byte[256];
+								String playerupdatedata = "ateseed";
+								playerupdatebuffer = playerupdatedata.getBytes();								
+								DatagramPacket ateseed = new DatagramPacket(playerupdatebuffer, playerupdatebuffer.length, clientsIA[arrayPosition], clientsPort[arrayPosition]);
+								socket.send(ateseed);								
+							}
+
+							/*
+							//player ate a player
+							*/
+							
+							//player just moved
+							else {
+								for(int i = 0; i < totalPlayers; i++){
+									DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+									socket.send(tosend);
+								}
+							}							
 						}						
+						
 					}
 				} catch (SocketException se) {
 					System.out.println("server" + se);
@@ -65,6 +126,51 @@ public class Server extends Thread {
 			}
 		};
 	}	
+	
+	
+	private int[] newSeedCoordinate(){
+		int[] toReturn = new int[2];
+		
+		Random rn = new Random();		
+		int x, y;
+		
+		while(true){
+			x = rn.nextInt(1250 - 1 + 1) + 1;
+			y = rn.nextInt(800 - 1 + 1) + 1;
+			
+			if(seedCoordinates[x][y] == -1){
+				toReturn[0] = x;
+				toReturn[1] = y;
+				seedCoordinates[x][y] = 1;
+				break;
+			}
+		}
+		
+		return toReturn;
+	}
+	
+	
+	private void initialSeedCoordinates(){
+		int num = 1;
+		
+		Random rn = new Random();		
+		int x, y;
+		
+		while(num != numberSeeds){
+			x = rn.nextInt(1250 - 1 + 1) + 1;
+			y = rn.nextInt(800 - 1 + 1) + 1;
+			
+			if(seedCoordinates[x][y] == -1){
+				seedCoordinates[x][y] = 1;
+				num++;
+				
+				if(initialCoordinates == null)
+					initialCoordinates = x + "," + y;				
+				
+				initialCoordinates = initialCoordinates + "," + x + "," + y;	
+			}			
+		}
+	}
 	
     public void run() {
         int count = 0;
@@ -86,20 +192,23 @@ public class Server extends Thread {
 				socket.receive(packet);						
 				
 				String data = new String(packet.getData());
-				String[] dataArray = data.split(",");
-				System.out.println(dataArray[1]);
-				int playerPort = Integer.parseInt(dataArray[1].trim());
 				
-				clientsPort[count] = playerPort;
+				//for checking if correct data
+				if(data.startsWith("sendport")){			
+					String[] dataArray = data.split(",");
+					int playerPort = Integer.parseInt(dataArray[2].trim());
+					
+					clientsPort[count] = playerPort;
+					
+					count++;
+					System.out.println("Players: " + count + " / " + totalPlayers); 					
+				}
 				
-                count++;
-                System.out.println("Players: " + count + " / " + totalPlayers);              
+				             
             } catch (IOException e) {
                 System.out.println(e);
             }
-        }	
-		
-		
+        }			
 		
         for(int i = 0; i < totalPlayers; i++)
             threads[i].start();	
@@ -110,8 +219,17 @@ public class Server extends Thread {
 		try{
 			for(int i = 0; i < totalPlayers; i++){
 			byte buffer[] = new byte[256];
+			
+			//sending initial seed coordinates
+			buffer = initialCoordinates.getBytes();			
 			DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
 			socket.send(tosend);
+			
+			//sending go signal
+			buffer = new byte[256];
+			tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+			socket.send(tosend);
+			
 			}	
 		} catch (SocketException se) {
 			System.out.println("server" + se);
@@ -120,6 +238,6 @@ public class Server extends Thread {
 		}
 		
 		
-					
+							
     }
 }

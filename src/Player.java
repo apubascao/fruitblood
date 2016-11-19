@@ -107,7 +107,7 @@ public class Player extends JPanel{
     public void moveOutgoing() {
 		try {           
             byte buffer[] = new byte[256];
-            String data = username + "," + fruitChoice + "," + 
+            String data = "playermove," + username + "," + fruitChoice + "," + 
                             size + "," + x + "," + y;
             buffer = data.getBytes();
                     
@@ -126,7 +126,7 @@ public class Player extends JPanel{
         //INITIAL SEND TO SERVER TO GET THE PORT
         try {
             byte buffer[] = new byte[256];              
-            String data = username + "," + playerSocket;
+            String data = "sendport," + username + "," + playerSocket;
             buffer = data.getBytes();       
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia,port);
             ds.send(packet);
@@ -138,4 +138,8 @@ public class Player extends JPanel{
         
         }
     }
+	
+	public void ateSeed(){
+		System.out.println("wooo ate a seed");
+	}
 }

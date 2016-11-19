@@ -20,6 +20,8 @@ public class GamePanel extends Background {
 
     private HashMap<String, String> players;
  
+	private int[][] seedCoordinates;
+ 
     public GamePanel(Player player) {
         players = new HashMap<String, String>();
         
@@ -49,25 +51,39 @@ public class GamePanel extends Background {
         add(score);
 
         addMouseMotionListener(new MouseMotionHandler());
+		
+		seedCoordinates = new int[1250][800];
     }
     
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;        
         
-        // render seed    
+        // render seed 
+		/*
         for(int i = 0; i < 20; i++){
             int seedX = seed.getX(i);
             int seedY = seed.getY(i);
             g2d.drawImage(seed.getImage(), seedX, seedY, null);    
         }
+		*/
+		
+		for(int i = 0; i < 1250; i++){
+			for(int j = 0; j < 800; j++){
+				if(seedCoordinates[i][j] == 1){
+					//g2d.drawImage(seed.getImage(), i, j, null); 
+				}
+			}
+		}
 
         // render golden seed
+		/*
         for(int i = 0; i < 5; i++){
             int gseedX = goldenSeed.getX(i);
             int gseedY = goldenSeed.getY(i);
             g2d.drawImage(goldenSeed.getImage(), gseedX, gseedY, null);    
         }
+		*/
 
         // render player's score
         g.drawString(player.getScore() + "", 50, 50);
@@ -81,11 +97,11 @@ public class GamePanel extends Background {
             
             String substring[] = data.split(",");
 
-            String username = substring[0].trim();      
-            String fruitChoice = substring[1].trim();
-            int size = Integer.parseInt(substring[2].trim());
-            int x = Integer.parseInt(substring[3].trim());
-            int y = Integer.parseInt(substring[4].trim());
+            String username = substring[1].trim();      
+            String fruitChoice = substring[2].trim();
+            int size = Integer.parseInt(substring[3].trim());
+            int x = Integer.parseInt(substring[4].trim());
+            int y = Integer.parseInt(substring[5].trim());
                         
             System.out.println("fruitChoice = " + fruitChoice);
                         
@@ -99,7 +115,7 @@ public class GamePanel extends Background {
     //String data = username + "," + fruitChoice + "," + size + "," + dx + "," + dy;
     public void paintPlayer(String data){
         String substring[] = data.split(",");
-        String username = substring[0];
+        String username = substring[1];
         players.put(username, data);
 
         repaint();
@@ -113,4 +129,15 @@ public class GamePanel extends Background {
             player.moveOutgoing();
         }
     }
+	
+	public void initialSeeds(String data){
+		String[] dataArray = data.split(",");
+		
+		for(int i = 0; i < dataArray.length/2; i++){
+			int x = Integer.parseInt(dataArray[i].trim());
+			int y = Integer.parseInt(dataArray[i+1].trim());			
+			
+			seedCoordinates[x][y] = 1;
+		}
+	}
 }
