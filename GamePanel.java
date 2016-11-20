@@ -18,11 +18,13 @@ public class GamePanel extends JPanel{
 	GoldenSeed goldenSeed;
 	Player player;
 	Image background;
+	Camera cam;
+
 
 	MovingAdapter ma = new MovingAdapter();
 	int tempX = ((getWidth()-3750)/2)+625;
 	int tempY = ((getHeight()-2400)/2)+400;
-	int prevX, prevY, z;
+	int prevX, prevY, z, w;
 	int seedX;
 	int seedY;
 	int gseedX;
@@ -39,6 +41,7 @@ public class GamePanel extends JPanel{
 		background = i.getImage();   
 		seed = new Seed();	
 		goldenSeed = new GoldenSeed();
+		cam = new Camera(0, 0);
 		
 		score = new JLabel("SCORE");
 		score.setText("SCORE");
@@ -54,10 +57,15 @@ public class GamePanel extends JPanel{
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
+
+		g2d.translate(cam.getX(), cam.getY());
+		
 		
 		g2d.drawImage(background, tempX, tempY, null);
-		System.out.println("dx: " + player.getDx() + " dy: " + player.getDy());
-		System.out.println("tempX = " + tempX + " tempY: " + tempY);
+		//System.out.println("dx: " + player.getDx() + " dy: " + player.getDy());
+		//System.out.println("tempX = " + tempX + " tempY: " + tempY);
+
+		
 			
 		for(z=0; z<200;z++){
 			seedX = seed.getX(z);
@@ -72,6 +80,13 @@ public class GamePanel extends JPanel{
 		}
 
 		g2d.drawImage(player.getImage(), player.getX(), player.getY(), null);
+		//g2d.drawImage(player.getImage(), 100, 100, null);
+
+		
+
+		g2d.translate(-cam.getX(), -cam.getY());
+
+		System.out.println(player.getX() + "   " + player.getY());
 
 		tempX = tempX-player.getDx();
 		tempY = tempY-player.getDy(); 
@@ -85,6 +100,7 @@ public class GamePanel extends JPanel{
 		public void mouseMoved(MouseEvent e) {
 			player.mouseMoved(e);
 			player.move();
+			cam.tick(player);
 			repaint();
 		}
 

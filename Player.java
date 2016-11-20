@@ -13,20 +13,15 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Player extends JPanel{
+public class Player extends JLabel{
 	int x, dx, y, dy, dd, frameX=1250, frameY=800;
 	Image playerImage;
 	int tempX = ((1250-3750)/2);
 	int tempY = ((800-2400)/2);
 	JLabel name;
- 
 	public Player() {
 		x = 620;
 		y = 300;
-		name = new JLabel("apple");
-		name.setLocation(x, y-50);
-		name.setVisible(true);
-		add(name);
 		ImageIcon i = new ImageIcon("images/fruit1.png");
 		playerImage = i.getImage();
 		
@@ -71,8 +66,10 @@ public class Player extends JPanel{
 	}
 
 	public void mouseMoved(MouseEvent e){
-		dx = (e.getX() - x)/60;
-		dy = (e.getY() - y)/60;
+		dx = (e.getX() - x)/2;
+		dy = (e.getY() - y)/2;
+		x = e.getX();
+		y = e.getY();
 	}
 
 	public void mouseReleased(MouseEvent e){
