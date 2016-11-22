@@ -129,9 +129,9 @@ public class Player extends JPanel {
         } catch (SocketException se) {
             System.out.println(se);
         } catch (UnknownHostException ue) {
-            System.out.println();
+            System.out.println(ue);
         } catch (IOException ioe) {
-        
+        	System.out.println(ioe);
         }
     }
 	
@@ -146,7 +146,7 @@ public class Player extends JPanel {
 	// Add 5 points to player's score
 	public void ateOpponent() {
 		for (int i = 0; i < 5; i++) {
-			score = score + i;
+			score = score + 1;
 
 			if (score % 10 == 0) // Update player's size
 				size = size + 25;
@@ -156,7 +156,6 @@ public class Player extends JPanel {
 	// Decrease player's life
 	public void decreaseLife(){
 		life = life - 1;
-		System.out.println("ouch");
 
 		if (life == 0) this.setVisible(false);
 	}
