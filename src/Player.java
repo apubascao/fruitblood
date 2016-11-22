@@ -159,4 +159,21 @@ public class Player extends JPanel {
 
 		if (life == 0) this.setVisible(false);
 	}
+	
+	// Send to server the new X and Y coordinates
+	public void sendNewXY(){
+		 try {
+            byte buffer[] = new byte[256];              
+            String data = "playermove," + username + "," + fruitChoice + "," + size + "," + x + "," + y + "," + score + "," + life;
+            buffer = data.getBytes();       
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
+            ds.send(packet);
+        } catch (SocketException se) {
+            System.out.println(se);
+        } catch (UnknownHostException ue) {
+            System.out.println(ue);
+        } catch (IOException ioe) {
+        	System.out.println(ioe);
+        }
+	}
 }

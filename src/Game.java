@@ -197,7 +197,11 @@ public class Game extends JLayeredPane {
                             player.setX(rand.nextInt(1250));
                             player.setY(rand.nextInt(800));
 
-                            gamePanel.repaint();
+							player.sendNewXY();
+						}
+						
+						if(data.startsWith("newXY")){
+							gamePanel.paintPlayer(data);
 						}
                         
                     }

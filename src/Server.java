@@ -159,6 +159,13 @@ public class Server extends Thread {
                                 }
                             }                               
                         }
+						
+						if(data.startsWith("newXY")){                            
+                            for(int i = 0; i < totalPlayers; i++){                              
+                                    DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+                                    socket.send(tosend);
+                            }                               
+                        }
                         
                     }
                 } catch (SocketException se) {
