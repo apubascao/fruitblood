@@ -8,7 +8,6 @@ import javax.imageio.*;
 import javax.swing.*;
 
 public class GamePanel extends Background {
-    private Seed seed;
     private GoldenSeed goldenSeed;
     private Player player;
 
@@ -45,7 +44,6 @@ public class GamePanel extends Background {
 
         this.player = player;
         
-        seed = new Seed();  
         goldenSeed = new GoldenSeed();
         
         score = new JLabel("SCORE");
@@ -79,7 +77,8 @@ public class GamePanel extends Background {
 		for(int i = 0; i < 1250; i++){
 			for(int j = 0; j < 800; j++){
 				if(seedCoordinates[i][j] == 1){
-					g2d.drawImage(seed.getImage(), i, j, 25, 25, null); 
+                    Seed seed = new Seed(i, j);
+					g2d.drawImage(seed.getImage(), i, j, 25, 25, null);
 				}
 			}
 		}
@@ -115,7 +114,7 @@ public class GamePanel extends Background {
             System.out.println("fruitChoice = " + fruitChoice);
                         
             ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + fruitChoice + ".png"));
-            g2d.drawImage(image.getImage(), x, y, size, size,this);
+            g2d.drawImage(image.getImage(), x, y, size, size, this);
             g.drawString(username, x - 20, y + 30); 
             g.drawString(size + "", x + 10, y - 10);			
         } 
