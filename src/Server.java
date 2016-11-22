@@ -170,7 +170,7 @@ public class Server extends Thread {
         };
     }
 
-    // Check if the two object overlap
+    // Check if the player and the seed overlap
     private boolean overlap(Rectangle playerBounds, Rectangle seedBounds) {
         return seedBounds.x < playerBounds.x + playerBounds.width && 
             seedBounds.x + seedBounds.width > playerBounds.x && 
@@ -185,8 +185,8 @@ public class Server extends Thread {
         int x, y;
         
         while(true){
-            x = rn.nextInt(1250 - 1 + 1) + 1;
-            y = rn.nextInt(800 - 1 + 1) + 1;
+            x = rn.nextInt(1250);
+            y = rn.nextInt(800);
             
             if(seedCoordinates[x][y] == -1){
                 toReturn[0] = x;

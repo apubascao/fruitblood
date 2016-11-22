@@ -120,7 +120,7 @@ public class GamePanel extends Background {
         } 
     }
 
-    //String data = username + "," + fruitChoice + "," + size + "," + dx + "," + dy;
+    //String data = username + "," + fruitChoice + "," + size + "," + x + "," + y;
     public void paintPlayer(String data){
         String substring[] = data.split(",");
         String username = substring[1];
@@ -150,8 +150,7 @@ public class GamePanel extends Background {
             player.setX(me.getX());
             player.setY(me.getY());
 			
-			
-			//eating an opponent
+			// eating an opponent
 			for (Object value : players.values()) {
 				String data = value + "";
 				
@@ -166,48 +165,45 @@ public class GamePanel extends Background {
 				int y = Integer.parseInt(substring[5].trim());
 				int score = Integer.parseInt(substring[6].trim());
 				int life = Integer.parseInt(substring[7].trim());
+
+                if (player.getUsername().equals(username)) continue;
 			
 				//if they are on the same location
 				
 				byte buffer[];
 				String toSend;						
-				DatagramPacket packet;				
+				DatagramPacket packet;
+
+                Rectangle player1 = new Rectangle(player.getX(), player.getY(), player.getFruitSize(), player.getFruitSize());       
+                Rectangle player2 = new Rectangle(x, y, size, size);		
 				
-				try{
-					if(player.getX() == x && player.getY() == y){				
+				try {
+					if (overlap(player1, player2)) { // Check if the two players overlap		
 						
-						if(player.getFruitSize() > size){
-							player.ateOpponent();
+						if (player.getFruitSize() > size) {   // Compare if player is bigger than opponent
 							buffer = new byte[256];
 							toSend = "ateopponent," + player.getUsername(); 
 							buffer = toSend.getBytes();
 							packet = new DatagramPacket(buffer, buffer.length, ia, port);
 							ds.send(packet);
 							
-							
-							
-							life = life - 1;
 							buffer = new byte[256];
-							toSend = "eaten," + username; 
+							toSend = "eaten," + username;
 							buffer = toSend.getBytes();
 							packet = new DatagramPacket(buffer, buffer.length, ia, port);
-							ds.send(packet);			
-						} 
-						if (player.getFruitSize() < size){						
-							score = score + 5;
+							ds.send(packet);	
+						} else if (player.getFruitSize() < size) {   // Compare if player is smaller than opponent		
 							buffer = new byte[256];
 							toSend = "ateopponent," + username; 
 							buffer = toSend.getBytes();
 							packet = new DatagramPacket(buffer, buffer.length, ia, port);
 							ds.send(packet);
 							
-							
-							player.decreaseLife();
 							buffer = new byte[256];
 							toSend = "eaten," + player.getUsername(); 
 							buffer = toSend.getBytes();
 							packet = new DatagramPacket(buffer, buffer.length, ia, port);
-							ds.send(packet);		
+							ds.send(packet);
 						} 
 					}
 				} catch (SocketException se) {
@@ -219,6 +215,14 @@ public class GamePanel extends Background {
 
             player.moveOutgoing();
         }
+    }
+
+    // Check if the two players overlap
+    private boolean overlap(Rectangle playerBounds, Rectangle opponentBounds) {
+        return opponentBounds.x < playerBounds.x + playerBounds.width && 
+            opponentBounds.x + opponentBounds.width > playerBounds.x && 
+            opponentBounds.y < playerBounds.y + playerBounds.height && 
+            opponentBounds.y + opponentBounds.height > playerBounds.y;
     }
 	
 	public void initialSeeds(String data){

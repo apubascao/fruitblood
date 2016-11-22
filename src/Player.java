@@ -6,9 +6,8 @@ import java.util.*;
 
 import javax.swing.*;
 
-public class Player extends JPanel{
+public class Player extends JPanel {
 	private Image playerImage;
-	private JLabel name;
 
 	private DatagramSocket ds;
 	private InetAddress ia;
@@ -23,7 +22,6 @@ public class Player extends JPanel{
 
 	private String address;
 	private String username;
-	
  
 	public Player(String address, int port, String username, int fruitChoice) {	
 		this.address = address;
@@ -57,7 +55,6 @@ public class Player extends JPanel{
 
 	public void setY(int y){
 		this.y = y;
-
 	}
  
 	public int getX(){
@@ -92,11 +89,6 @@ public class Player extends JPanel{
 		return life;
 	}
 	
-	public void decreaseLife(){
-		life = life - 1;
-		System.out.println("ouch");
-	}
-
 	public String getAddress() {
 		return address;
 	}
@@ -143,17 +135,29 @@ public class Player extends JPanel{
         }
     }
 	
-	public void ateSeed(){
+	// Add 1 point to player's score
+	public void ateSeed() {
 		score = score + 1;
 		
-		if(score % 10 == 0)
+		if(score % 10 == 0)	// Update player's size
 			size = size + 25;
 	}
 	
-	public void ateOpponent(){
-		score = score + 5;
-		
-		if(score % 10 == 0)
-			size = size + 25;
+	// Add 5 points to player's score
+	public void ateOpponent() {
+		for (int i = 0; i < 5; i++) {
+			score = score + i;
+
+			if (score % 10 == 0) // Update player's size
+				size = size + 25;
+		}
+	}
+
+	// Decrease player's life
+	public void decreaseLife(){
+		life = life - 1;
+		System.out.println("ouch");
+
+		if (life == 0) this.setVisible(false);
 	}
 }

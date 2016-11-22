@@ -2,10 +2,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 
 import javax.imageio.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
 
 public class Game extends JLayeredPane {
@@ -171,7 +171,7 @@ public class Game extends JLayeredPane {
                         
                         socket.receive(packet);
 
-                        String data = new String(packet.getData());						
+                        String data = new String(packet.getData());				
 						
 						if(data.startsWith("playermove")){
 							gamePanel.paintPlayer(data);
@@ -191,6 +191,13 @@ public class Game extends JLayeredPane {
 						
 						if(data.startsWith("eaten")){
 							player.decreaseLife();
+
+                            // Respawn player when eaten
+                            Random rand = new Random();
+                            player.setX(rand.nextInt(1250));
+                            player.setY(rand.nextInt(800));
+
+                            gamePanel.repaint();
 						}
                         
                     }
