@@ -22,7 +22,9 @@ public class Player extends JPanel {
 
 	private String address;
 	private String username;
- 
+	
+	private int towin;
+	
 	public Player(String address, int port, String username, int fruitChoice) {	
 		this.address = address;
 		this.port = port;
@@ -47,6 +49,8 @@ public class Player extends JPanel {
 
 		Random rn = new Random();
         playerSocket = rn.nextInt(65535 - 1024 + 1) + 1024;
+		
+		towin = 500;
 	}
 
 	public void setX(int x){
@@ -141,6 +145,9 @@ public class Player extends JPanel {
 		
 		if(score % 10 == 0)	// Update player's size
 			size = size + 25;
+			
+		if(score >= towin)
+			win();
 	}
 	
 	// Add 5 points to player's score
@@ -150,6 +157,9 @@ public class Player extends JPanel {
 
 			if (score % 10 == 0) // Update player's size
 				size = size + 25;
+				
+			if(score >= towin)
+				win();
 		}
 	}
 
@@ -183,6 +193,22 @@ public class Player extends JPanel {
 		try {
             byte buffer[] = new byte[256];              
             String data = "dead," + username;
+            buffer = data.getBytes();       
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
+            ds.send(packet);
+        } catch (SocketException se) {
+            System.out.println(se);
+        } catch (UnknownHostException ue) {
+            System.out.println(ue);
+        } catch (IOException ioe) {
+        	System.out.println(ioe);
+        }
+	}
+	
+	private void win(){
+		try {
+            byte buffer[] = new byte[256];              
+            String data = "win," + username + "," + fruitChoice; 
             buffer = data.getBytes();       
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
             ds.send(packet);

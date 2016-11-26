@@ -211,6 +211,12 @@ public class Game extends JLayeredPane {
 						if(data.startsWith("dead")){
 							gamePanel.dead(data);
 						}
+						
+						if(data.startsWith("win")){
+							gamePanel.removeListener();
+							System.out.println(data);
+							//create a jpanel that will display the winner, username and fruitChoice
+						}
                         
                     }
                 } catch (SocketException se) {

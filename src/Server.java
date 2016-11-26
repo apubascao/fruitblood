@@ -34,7 +34,7 @@ public class Server extends Thread {
     public Server(int port, int num, String address) throws IOException {
         serverSocket = new ServerSocket(port);  // bind the port to a socket
         socket = new DatagramSocket(port);
-        totalPlayers = num;
+        totalPlayers = 3;
         clients = new Socket[totalPlayers];    // create unconnected sockets
         
         this.port = port;
@@ -189,6 +189,14 @@ public class Server extends Thread {
                                     socket.send(tosend);
                                 }
 								
+                            }                               
+                        }
+						
+						
+						if(data.startsWith("win")){                            
+                            for(int i = 0; i < totalPlayers; i++){                              
+								DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+								socket.send(tosend);
                             }                               
                         }
 						

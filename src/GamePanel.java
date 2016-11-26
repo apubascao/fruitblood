@@ -241,8 +241,34 @@ public class GamePanel extends Background {
 	
 	public void dead(String data){
 		String[] dataArray = data.split(",");
-		String username = dataArray[1].trim();
+		String username = dataArray[1].trim();		
+		players.remove(username);		
 		
-		players.remove(username);
+		repaint();
+		
+		//player wins by eating all opponents
+		if(players.size() == 1){
+			Object value = players.values();
+			
+			data = value + "";				
+			String substring[] = data.split(",");
+			username = substring[1].trim();      
+			String fruitChoice = substring[2].trim();			
+			
+			//to avoid duplicate packets
+			try{
+				if(username.equals(player.getUsername())){
+					byte buffer[] = new byte[256];              
+					String toSend = "win," + username + "," + fruitChoice; 
+					buffer = toSend.getBytes();       
+					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
+					ds.send(packet);
+				}				
+			} catch (SocketException se) {
+				System.out.println(se);
+			} catch (IOException ie) {
+				System.out.println(ie);
+			}						
+		}
 	}
 }
