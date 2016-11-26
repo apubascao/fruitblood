@@ -56,7 +56,6 @@ public class Game extends JLayeredPane {
         
         loadGame();
         
-		
         try {			
 			socket = new DatagramSocket(player.getPlayerSocket());
 			byte buffer[] = new byte[256];
@@ -181,7 +180,11 @@ public class Game extends JLayeredPane {
 						}
 
 						if(data.startsWith("ateseed")){
-							player.ateSeed();
+                            String substring[] = data.split(",");
+                            int type = Integer.parseInt(substring[1].trim());
+
+                            if (type == 1) player.ateSeed();
+                            else player.setMultiplier(type);
 						}
 						
 						if(data.startsWith("ateopponent")){

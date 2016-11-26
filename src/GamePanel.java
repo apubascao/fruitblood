@@ -8,7 +8,6 @@ import javax.imageio.*;
 import javax.swing.*;
 
 public class GamePanel extends Background {
-    private GoldenSeed goldenSeed;
     private Player player;
 
     private Image gameBG;
@@ -46,8 +45,6 @@ public class GamePanel extends Background {
 
         this.player = player;
         
-        goldenSeed = new GoldenSeed();
-        
         score = new JLabel("SCORE");
         score.setText("SCORE");
         score.setPreferredSize(new Dimension(580,11));
@@ -84,18 +81,12 @@ public class GamePanel extends Background {
 				if(seedCoordinates[i][j] == 1){
                     Seed seed = new Seed(i, j);
 					g2d.drawImage(seed.getImage(), i, j, 25, 25, null);
+				} else if (seedCoordinates[i][j] == 2){
+					GoldenSeed goldenSeed = new GoldenSeed(i, j);
+					g2d.drawImage(goldenSeed.getImage(), i, j, 25, 25, null);
 				}
 			}
 		}
-
-        // render golden seed
-		/*
-        for(int i = 0; i < 5; i++){
-            int gseedX = goldenSeed.getX(i);
-            int gseedY = goldenSeed.getY(i);
-            g2d.drawImage(goldenSeed.getImage(), gseedX, gseedY, null);    
-        }
-		*/
 
         // render player's score
         g.drawString(player.getScore() + "", 50, 50);
@@ -135,13 +126,15 @@ public class GamePanel extends Background {
 		
 		int x = Integer.parseInt(substring[1].trim());
 		int y = Integer.parseInt(substring[2].trim());
-		
+
 		seedCoordinates[x][y] = -1;
 		
 		x = Integer.parseInt(substring[3].trim());
 		y = Integer.parseInt(substring[4].trim());
+		int type = Integer.parseInt(substring[5].trim());
+		System.out.println("type: " + type);
 		
-		seedCoordinates[x][y] = 1;
+		seedCoordinates[x][y] = type;
 
         repaint();
 	}
@@ -227,11 +220,12 @@ public class GamePanel extends Background {
 	public void initialSeeds(String data){
 		String[] dataArray = data.split(",");
 				
-		for(int i = 0; i < dataArray.length; i = i + 2){
+		for(int i = 0; i < dataArray.length; i = i + 3){
 			int x = Integer.parseInt(dataArray[i].trim());
-			int y = Integer.parseInt(dataArray[i+1].trim());			
+			int y = Integer.parseInt(dataArray[i+1].trim());
+			int type = Integer.parseInt(dataArray[i+2].trim());			
 						
-			seedCoordinates[x][y] = 1;
+			seedCoordinates[x][y] = type;
 		}
 	}
 	

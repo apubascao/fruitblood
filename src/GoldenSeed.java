@@ -1,35 +1,20 @@
-import java.awt.*; 
-import java.awt.event.*; 
-import javax.swing.*;
-import java.util.Random;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 public class GoldenSeed {
-	private Image goldenImage;
-	private int z;
-	private int[] x = new int[200];
-	private int[] y = new int[200];
-	
-	public GoldenSeed(){
-		Random randX = new Random();
-		Random randY = new Random();
-		ImageIcon i = new ImageIcon("res/gold.png");		
-		goldenImage = i.getImage();
+    private Image goldImage;
+    private int x;
+    private int y;
+    
+    public GoldenSeed(int x, int y){
+        this.x = x;
+        this.y = y;
 
-		for(z=0; z<200; z++){
-			x[z] = randX.nextInt(1250);
-			y[z] = randY.nextInt(800);
-		}
-	}
+        ImageIcon i = new ImageIcon("res/gold.png");
+        goldImage = i.getImage();
+    }
 
-	public int getX(int z){
-		return x[z];
-	}
- 
-	public int getY(int z){
-		return y[z];
-	}
-
-	public Image getImage(){
-		return goldenImage;
-	}
+    public Image getImage(){
+        return goldImage;
+    }
 }
