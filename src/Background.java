@@ -1,6 +1,8 @@
-import javax.swing.*;
-import javax.imageio.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 
 public class Background extends JPanel {
 	private Image bg;
