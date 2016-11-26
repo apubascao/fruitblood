@@ -82,7 +82,6 @@ public class Game extends JLayeredPane {
 			//for initial coordinates of seeds
 			socket.receive(packet);
 			data = new String(packet.getData());
-			System.out.println("DATA = " + data);
 			
         } catch (SocketException se) {
             System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
@@ -192,16 +191,25 @@ public class Game extends JLayeredPane {
 						if(data.startsWith("eaten")){
 							player.decreaseLife();
 
-                            // Respawn player when eaten
-                            Random rand = new Random();
-                            player.setX(rand.nextInt(1250));
-                            player.setY(rand.nextInt(800));
-
-							player.sendNewXY();
+							// Respawn player when eaten
+							if(player.getLife() > 0){
+								Random rand = new Random();
+								player.setX(rand.nextInt(1250));
+								player.setY(rand.nextInt(800));
+								player.sendNewXY();
+							}
 						}
 						
 						if(data.startsWith("newXY")){
 							gamePanel.paintPlayer(data);
+						}
+						
+						if(data.startsWith("removelistener")){
+							gamePanel.removeListener();
+						}
+						
+						if(data.startsWith("dead")){
+							gamePanel.dead(data);
 						}
                         
                     }

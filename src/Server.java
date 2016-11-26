@@ -166,6 +166,32 @@ public class Server extends Thread {
                                     socket.send(tosend);
                             }                               
                         }
+						
+						if(data.startsWith("dead")){							
+							DatagramPacket tosend;
+                            String substring[] = data.split(",");
+                            String username = substring[1].trim();      
+							
+							System.out.println(username + " inside dead");
+                            
+                            for(int i = 0; i < totalPlayers; i++){
+								
+								//send to all that a player is dead
+								tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
+								socket.send(tosend);
+								
+								//remove mouse listener
+                                if(clientsUsername[i].equals(username)){										
+									byte[] removeBuffer = new byte[256];
+									String toSend = "removelistener";
+									removeBuffer = toSend.getBytes();
+									tosend = new DatagramPacket(removeBuffer, removeBuffer.length, clientsIA[i], clientsPort[i]);
+                                    socket.send(tosend);
+                                }
+								
+                            }                               
+                        }
+						
                         
                     }
                 } catch (SocketException se) {

@@ -24,7 +24,9 @@ public class GamePanel extends Background {
 	private String address;
     private int port;    
     private DatagramSocket ds;
-	private InetAddress ia;	
+	private InetAddress ia;
+	
+	private MouseMotionHandler mmh;
  
     public GamePanel(Player player, String address, int port) {
         players = new HashMap<String, String>();
@@ -53,7 +55,10 @@ public class GamePanel extends Background {
         score.setBackground(Color.RED);
         add(score);
 
-        addMouseMotionListener(new MouseMotionHandler());
+		
+		mmh = new MouseMotionHandler();
+		
+        addMouseMotionListener(mmh);
 		
 		seedCoordinates = new int[1250][800];
 		
@@ -100,8 +105,6 @@ public class GamePanel extends Background {
         for (Object value : players.values()) {
             String data = value + "";
             
-            System.out.println("data = " + data);
-            
             String substring[] = data.split(",");
 
             String username = substring[1].trim();      
@@ -110,8 +113,6 @@ public class GamePanel extends Background {
             int x = Integer.parseInt(substring[4].trim());
             int y = Integer.parseInt(substring[5].trim());
 			int score = Integer.parseInt(substring[6].trim());
-                        
-            System.out.println("fruitChoice = " + fruitChoice);
                         
             ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + fruitChoice + ".png"));
             g2d.drawImage(image.getImage(), x, y, size, size, this);
@@ -153,8 +154,6 @@ public class GamePanel extends Background {
 			// eating an opponent
 			for (Object value : players.values()) {
 				String data = value + "";
-				
-				System.out.println("data = " + data);
 				
 				String substring[] = data.split(",");
 
@@ -227,16 +226,23 @@ public class GamePanel extends Background {
 	
 	public void initialSeeds(String data){
 		String[] dataArray = data.split(",");
-		
-		System.out.println("DA = " + dataArray.length);
-		
+				
 		for(int i = 0; i < dataArray.length; i = i + 2){
 			int x = Integer.parseInt(dataArray[i].trim());
 			int y = Integer.parseInt(dataArray[i+1].trim());			
-			
-			System.out.println("x y = " +  x + " " + y);
-			
+						
 			seedCoordinates[x][y] = 1;
 		}
+	}
+	
+	public void removeListener(){
+		this.removeMouseMotionListener(mmh);
+	}
+	
+	public void dead(String data){
+		String[] dataArray = data.split(",");
+		String username = dataArray[1].trim();
+		
+		players.remove(username);
 	}
 }

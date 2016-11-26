@@ -157,7 +157,8 @@ public class Player extends JPanel {
 	public void decreaseLife(){
 		life = life - 1;
 
-		if (life == 0) this.setVisible(false);
+		if(life == 0)
+			dead();
 	}
 	
 	// Send to server the new X and Y coordinates
@@ -165,6 +166,23 @@ public class Player extends JPanel {
 		 try {
             byte buffer[] = new byte[256];              
             String data = "playermove," + username + "," + fruitChoice + "," + size + "," + x + "," + y + "," + score + "," + life;
+            buffer = data.getBytes();       
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
+            ds.send(packet);
+        } catch (SocketException se) {
+            System.out.println(se);
+        } catch (UnknownHostException ue) {
+            System.out.println(ue);
+        } catch (IOException ioe) {
+        	System.out.println(ioe);
+        }
+	}
+	
+	
+	private void dead(){
+		try {
+            byte buffer[] = new byte[256];              
+            String data = "dead," + username;
             buffer = data.getBytes();       
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, ia, port);
             ds.send(packet);
