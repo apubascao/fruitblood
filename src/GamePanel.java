@@ -217,6 +217,28 @@ public class GamePanel extends Background {
             opponentBounds.y + opponentBounds.height > playerBounds.y;
     }
 	
+	public boolean respawnOverlap(int check_x, int check_y, int check_size){		
+
+		for (Object value : players.values()) {
+			String data = value + "";
+			
+			String substring[] = data.split(",");
+
+			int size = Integer.parseInt(substring[3].trim());
+			int x = Integer.parseInt(substring[4].trim());
+			int y = Integer.parseInt(substring[5].trim());			
+
+			Rectangle player1 = new Rectangle(check_x, check_y, check_size, check_size);       
+			Rectangle player2 = new Rectangle(x, y, size, size);		
+			
+			if(overlap(player1, player2)){
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
 	public void initialSeeds(String data){
 		String[] dataArray = data.split(",");
 				
