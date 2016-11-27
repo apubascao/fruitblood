@@ -202,35 +202,44 @@ public class Game extends JLayeredPane {
 
                                 t.start();
                             }
-                        }
-                        
-                        if(data.startsWith("ateopponent")){
-                            player.ateOpponent();
-                        }
-                        
-                        if(data.startsWith("eaten")){
-                            player.decreaseLife();
+						}
+						
+						if(data.startsWith("ateopponent")){
+							player.ateOpponent();
+						}
+						
+						if(data.startsWith("eaten")){
+							player.decreaseLife();
 
-                            // Respawn player when eaten
-                            if(player.getLife() > 0){
-                                Random rand = new Random();
-                                player.setX(rand.nextInt(1250));
-                                player.setY(rand.nextInt(800));
-                                player.sendNewXY();
-                            }
-                        }
-                        
-                        if(data.startsWith("newXY")){
-                            gamePanel.paintPlayer(data);
-                        }
-                        
-                        if(data.startsWith("removelistener")){
-                            gamePanel.removeListener();
-                        }
-                        
-                        if(data.startsWith("dead")){
-                            gamePanel.dead(data);
-                        }
+							// Respawn player when eaten
+							if(player.getLife() > 0){
+								while(true){
+									Random rand = new Random();									
+									int x = rand.nextInt(1250);
+									int y = rand.nextInt(800);
+									
+									if(!gamePanel.respawnOverlap(x, y, player.getFruitSize())){
+										player.setX(x);
+										player.setY(y);
+										player.sendNewXY();										
+										break;
+									}
+								}
+								
+							}
+						}
+						
+						if(data.startsWith("newXY")){
+							gamePanel.paintPlayer(data);
+						}
+						
+						if(data.startsWith("removelistener")){
+							gamePanel.removeListener();
+						}
+						
+						if(data.startsWith("dead")){
+							gamePanel.dead(data);
+						}
                         
                         if(data.startsWith("win")){
                             gamePanel.removeListener();
