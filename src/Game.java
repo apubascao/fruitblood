@@ -56,41 +56,41 @@ public class Game extends JLayeredPane {
         
         loadGame();
         
-        try {			
-			socket = new DatagramSocket(player.getPlayerSocket());
-			byte buffer[] = new byte[256];
-			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-		
-			//for starting the game
-			socket.receive(packet);
+        try {           
+            socket = new DatagramSocket(player.getPlayerSocket());
+            byte buffer[] = new byte[256];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+        
+            //for starting the game
+            socket.receive(packet);
         } catch (SocketException se) {
             System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
         } catch (IOException ioe) {
             System.out.println("Input/Ouput error occurs!");      
-		}
+        }
                 
         renderGUI();
     }
 
     private void renderGUI() {
-		String data = null; 
-		try {
-			byte buffer[] = new byte[256];
-			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-			
-			//for initial coordinates of seeds
-			socket.receive(packet);
-			data = new String(packet.getData());
-			
+        String data = null; 
+        try {
+            byte buffer[] = new byte[256];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            
+            //for initial coordinates of seeds
+            socket.receive(packet);
+            data = new String(packet.getData());
+            
         } catch (SocketException se) {
             System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
         } catch (IOException ioe) {
             System.out.println("Input/Ouput error occurs!");      
-		}	
-		
+        }   
+        
         gamePanel = new GamePanel(player, address, port);
-		
-		gamePanel.initialSeeds(data);
+        
+        gamePanel.initialSeeds(data);
 
         chatbox = new JPanel();
 
@@ -169,58 +169,74 @@ public class Game extends JLayeredPane {
                         
                         socket.receive(packet);
 
-                        String data = new String(packet.getData());				
-						
-						if(data.startsWith("playermove")){
-							gamePanel.paintPlayer(data);
-						}
-						
-						if(data.startsWith("seedupdate")){
-							gamePanel.paintSeed(data);
-						}
+                        String data = new String(packet.getData());             
+                        
+                        if(data.startsWith("playermove")){
+                            gamePanel.paintPlayer(data);
+                        }
+                        
+                        if(data.startsWith("seedupdate")){
+                            gamePanel.paintSeed(data);
+                        }
 
-						if(data.startsWith("ateseed")){
+                        if(data.startsWith("ateseed")){
                             String substring[] = data.split(",");
                             int type = Integer.parseInt(substring[1].trim());
 
                             if (type == 1) player.ateSeed();
-                            else player.setMultiplier(type);
-						}
-						
-						if(data.startsWith("ateopponent")){
-							player.ateOpponent();
-						}
-						
-						if(data.startsWith("eaten")){
-							player.decreaseLife();
+                            else {
+                                player.setMultiplier(type);
 
-							// Respawn player when eaten
-							if(player.getLife() > 0){
-								Random rand = new Random();
-								player.setX(rand.nextInt(1250));
-								player.setY(rand.nextInt(800));
-								player.sendNewXY();
-							}
-						}
-						
-						if(data.startsWith("newXY")){
-							gamePanel.paintPlayer(data);
-						}
-						
-						if(data.startsWith("removelistener")){
-							gamePanel.removeListener();
-						}
-						
-						if(data.startsWith("dead")){
-							gamePanel.dead(data);
-						}
-						
-						if(data.startsWith("win")){
-							gamePanel.removeListener();
-							System.out.println(data);
-							//create a jpanel that will display the winner, username and fruitChoice
-						}
+                                // 10 seconds countdown
+                                Thread t = new Thread() {
+                                    public void run() {
+                                        for (int i = 10; i >= 0; i--) {
+                                            try {
+                                                // thread to sleep for 1000 milliseconds
+                                                Thread.sleep(1000);
+                                            }catch(InterruptedException ie) {}
+                                        }
+                                        player.setMultiplier(1);
+                                    }
+                                };
+
+                                t.start();
+                            }
+                        }
                         
+                        if(data.startsWith("ateopponent")){
+                            player.ateOpponent();
+                        }
+                        
+                        if(data.startsWith("eaten")){
+                            player.decreaseLife();
+
+                            // Respawn player when eaten
+                            if(player.getLife() > 0){
+                                Random rand = new Random();
+                                player.setX(rand.nextInt(1250));
+                                player.setY(rand.nextInt(800));
+                                player.sendNewXY();
+                            }
+                        }
+                        
+                        if(data.startsWith("newXY")){
+                            gamePanel.paintPlayer(data);
+                        }
+                        
+                        if(data.startsWith("removelistener")){
+                            gamePanel.removeListener();
+                        }
+                        
+                        if(data.startsWith("dead")){
+                            gamePanel.dead(data);
+                        }
+                        
+                        if(data.startsWith("win")){
+                            gamePanel.removeListener();
+                            System.out.println(data);
+                            //create a jpanel that will display the winner, username and fruitChoice
+                        }
                     }
                 } catch (SocketException se) {
                     System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
