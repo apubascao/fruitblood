@@ -183,7 +183,9 @@ public class GamePanel extends Background {
 							toSend = "eaten," + username;
 							buffer = toSend.getBytes();
 							packet = new DatagramPacket(buffer, buffer.length, ia, port);
-							ds.send(packet);	
+							ds.send(packet);
+
+							players.remove(username);
 						} else if (player.getFruitSize() < size) {   // Compare if player is smaller than opponent		
 							buffer = new byte[256];
 							toSend = "ateopponent," + username; 
