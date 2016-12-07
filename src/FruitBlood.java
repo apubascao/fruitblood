@@ -56,9 +56,7 @@ public class FruitBlood extends JFrame implements ActionListener {
     private JTextField portField;
     private JTextField addressField;
     private JTextField usernameField;
-
-    private JLabel countdown;
-
+    
     private CardLayout card;
 
     private ArrayList<Image> fruitBG = new ArrayList<Image>();
@@ -201,8 +199,6 @@ public class FruitBlood extends JFrame implements ActionListener {
         addressField = new JTextField();
         usernameField = new JTextField();
 
-        countdown = new JLabel("Countdown: 5");
-
         card = new CardLayout();
 
         loadImages();
@@ -252,11 +248,6 @@ public class FruitBlood extends JFrame implements ActionListener {
         usernamePanel.setBorder(new EmptyBorder(35, 120, 40, 0));
         usernamePanel.setOpaque(false);
         usernamePanel.add(usernameField);
-
-        countdown.setSize(625, 90);
-        countdown.setFont(
-            new Font(countdown.getFont().getName(), 
-                countdown.getFont().getStyle(), 24));
 
         right.setPreferredSize(new Dimension(625, 550));
         right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
