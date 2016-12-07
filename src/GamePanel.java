@@ -92,7 +92,6 @@ public class GamePanel extends Background {
         g.drawString(player.getScore() + "", 50, 50);
 
         //render all players
-        System.out.println(players.keySet());
         for (Object value : players.values()) {
             String data = value + "";
             
@@ -132,7 +131,6 @@ public class GamePanel extends Background {
 		x = Integer.parseInt(substring[3].trim());
 		y = Integer.parseInt(substring[4].trim());
 		int type = Integer.parseInt(substring[5].trim());
-		System.out.println("type: " + type);
 		
 		seedCoordinates[x][y] = type;
 
@@ -145,8 +143,9 @@ public class GamePanel extends Background {
             player.setY(me.getY());
 			
 			// eating an opponent
-			for (Object value : players.values()) {
-				String data = value + "";
+            Object[] pks = players.keySet().toArray();
+            for(int i = 0; i < pks.length; i++){
+				String data = players.get(pks[i] + "");
 				
 				String substring[] = data.split(",");
 

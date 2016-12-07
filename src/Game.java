@@ -12,6 +12,9 @@ public class Game extends JLayeredPane {
     private String username;
     private int fruitChoice;
     private String message;
+    private boolean end;
+    private String winner;
+    private int type;
 
     private Socket server;
 
@@ -40,6 +43,7 @@ public class Game extends JLayeredPane {
         this.username = username;
         this.fruitChoice = fruitChoice;
         message = "";
+        end = false;
 
         try {
             server = new Socket(address, port);   // creating a new socket for client and binding it to a port
@@ -239,12 +243,16 @@ public class Game extends JLayeredPane {
 						
 						if(data.startsWith("dead")){
 							gamePanel.dead(data);
+
 						}
                         
                         if(data.startsWith("win")){
                             gamePanel.removeListener();
-                            System.out.println(data);
+                            String substring[] = data.split(",");
+                            winner = substring[1].trim();
+                            type = Integer.parseInt(substring[2].trim());  
                             //create a jpanel that will display the winner, username and fruitChoice
+                            end = true;                            
                         }
                     }
                 } catch (SocketException se) {
@@ -254,6 +262,18 @@ public class Game extends JLayeredPane {
                 }
             }
         };      
+    }
+
+    public boolean checkEnd() {
+        return end;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public int getFruitWinner() {
+        return type;
     }
 
     public void start() {

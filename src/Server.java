@@ -145,8 +145,6 @@ public class Server extends Thread {
                             String substring[] = data.split(",");
                             String username = substring[1].trim();      
                             
-                            System.out.println(username + " inside ate");
-                            
                             for(int i = 0; i < totalPlayers; i++){                              
                                 if(clientsUsername[i].equals(username)){
                                     DatagramPacket tosend = new DatagramPacket(buffer, buffer.length, clientsIA[i], clientsPort[i]);
@@ -159,8 +157,6 @@ public class Server extends Thread {
                         if(data.startsWith("eaten")){
                             String substring[] = data.split(",");
                             String username = substring[1].trim();      
-                            
-                            System.out.println(username + " inside eaten");
                             
                             for(int i = 0; i < totalPlayers; i++){                              
                                 if(clientsUsername[i].equals(username)){

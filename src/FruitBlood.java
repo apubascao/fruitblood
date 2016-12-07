@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.InterruptedException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -56,7 +57,7 @@ public class FruitBlood extends JFrame implements ActionListener {
     private JTextField portField;
     private JTextField addressField;
     private JTextField usernameField;
-    
+
     private CardLayout card;
 
     private ArrayList<Image> fruitBG = new ArrayList<Image>();
@@ -297,6 +298,26 @@ public class FruitBlood extends JFrame implements ActionListener {
             cards.show(front, "game");
             
             game.start();
+            
+            Thread t = new Thread() {
+                public void run() {
+                    while (true) {
+                        try {
+                            Thread.sleep(100);
+                            if (game.checkEnd()) {
+                                Winner winner = new Winner(game.getWinner(), game.getFruitWinner());
+
+                                front.add(winner, "winner");
+                                cards.show(front, "winner");
+                                break;
+                            }
+                        } catch (InterruptedException ie) {}
+                        
+                    }
+                }
+            };
+
+            t.start();
         }
     }
 

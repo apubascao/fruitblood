@@ -151,7 +151,7 @@ public class ServerGUI extends JFrame implements ActionListener {
             playersstr = playerinput.getText();
             try {    //try catch for number of players
                 playerint = Integer.parseInt(playersstr);
-                if(playerint >= 3) {
+                if(playerint >= 2) {
                     cards.show(front, "createdBG");
 
                     String address = "localhost";
