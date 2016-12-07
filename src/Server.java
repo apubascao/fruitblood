@@ -280,6 +280,7 @@ public class Server extends Thread {
         System.out.println("Players: " + count + " / " + totalPlayers);
         
         ServerMessageIncoming[] threads = new ServerMessageIncoming[totalPlayers];
+        HashMap<String, Integer> checker = new HashMap<String, Integer>();
                 
         while (count < totalPlayers) {  // check current player count
             try {
@@ -302,8 +303,34 @@ public class Server extends Thread {
                     
                     String playerUsername = dataArray[1].trim();
                     int playerPort = Integer.parseInt(dataArray[2].trim());
-                    
+
                     clientsPort[count] = playerPort;
+
+                    System.out.println(playerUsername);
+                    
+                    if(checker.containsKey(playerUsername)){
+                        int value = checker.get(playerUsername);
+                        value = value + 1;
+                        checker.put(playerUsername, value);
+                        playerUsername = playerUsername + value;
+
+                        System.out.println(playerUsername);
+
+                        //update the client of his new username
+                        byte[] updateBuffer = new byte[256];
+                        String toSend = "updateUsername," + playerUsername;
+                        updateBuffer = toSend.getBytes();
+                        DatagramPacket update = new DatagramPacket(updateBuffer, updateBuffer.length, clientsIA[count], clientsPort[count]);
+                        socket.send(update);
+
+                        checker.put(playerUsername, value);
+                    }
+
+                    else{
+                        System.out.println("inside else");
+                        checker.put(playerUsername, 0);
+                    }
+
                     clientsUsername[count] = playerUsername;
                     
                     count++;

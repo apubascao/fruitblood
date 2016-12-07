@@ -52,7 +52,6 @@ public class Game extends JLayeredPane {
             System.out.println("Cannot find (or disconnected from) Server");
         }
         
-        loadChat();
         player.sendPort();
 
         this.address = address;
@@ -67,12 +66,27 @@ public class Game extends JLayeredPane {
         
             //for starting the game
             socket.receive(packet);
+            String data = new String(packet.getData());             
+            System.out.println(data);
+            if(data.startsWith("updateUsername")){
+                String substring[] = data.split(",");
+                String newUsername = substring[1].trim();
+
+                player.updateUsername(newUsername);
+                this.username = newUsername;
+
+                //wait for go signal from the server
+                socket.receive(packet);
+            }
+
+
         } catch (SocketException se) {
             System.out.println("The socket could not be opened, or the socket could not bind to the specified local port.");
         } catch (IOException ioe) {
             System.out.println("Input/Ouput error occurs!");      
         }
                 
+        loadChat();
         renderGUI();
     }
 

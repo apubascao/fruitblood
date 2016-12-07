@@ -230,4 +230,8 @@ public class Player extends JPanel {
             System.out.println(ioe);
         }
     }
+
+    public void updateUsername(String newUsername){
+        this.username = newUsername;
+    }
 }
