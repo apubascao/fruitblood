@@ -12,10 +12,6 @@ public class GamePanel extends Background {
 
     private Image gameBG;
 
-    private JFrame frame;
-    
-    private JLabel score;
-
     private HashMap<String, String> players;
  
 	private int[][] seedCoordinates;
@@ -44,14 +40,6 @@ public class GamePanel extends Background {
         this.setImage(new ImageIcon(gameBG));
 
         this.player = player;
-        
-        score = new JLabel("SCORE");
-        score.setText("SCORE");
-        score.setPreferredSize(new Dimension(580,11));
-        score.setHorizontalAlignment(JLabel.CENTER);
-        score.setBackground(Color.RED);
-        add(score);
-
 		
 		mmh = new MouseMotionHandler();
 		
@@ -79,10 +67,10 @@ public class GamePanel extends Background {
 		for(int i = 0; i < 1250; i++){
 			for(int j = 0; j < 800; j++){
 				if(seedCoordinates[i][j] == 1){
-                    Seed seed = new Seed(i, j);
+                    ImageIcon seed = new ImageIcon(this.getClass().getResource("res/seed.png"));
 					g2d.drawImage(seed.getImage(), i, j, 25, 25, null);
 				} else if (seedCoordinates[i][j] == 2){
-					GoldenSeed goldenSeed = new GoldenSeed(i, j);
+					ImageIcon goldenSeed = new ImageIcon(this.getClass().getResource("res/gold.png"));
 					g2d.drawImage(goldenSeed.getImage(), i, j, 25, 25, null);
 				}
 			}
@@ -90,6 +78,12 @@ public class GamePanel extends Background {
 
         // render player's score
         g.drawString(player.getScore() + "", 50, 50);
+
+        //
+        for (int i = 0; i < player.getLife(); i++) {
+        	ImageIcon image = new ImageIcon(this.getClass().getResource("res/fruit" + player.getFruitChoice() + ".png"));
+            g2d.drawImage(image.getImage(), 1200 - (10 * i), 50, 25, 25, this);
+        }
 
         //render all players
         for (Object value : players.values()) {

@@ -179,8 +179,6 @@ public class Server extends Thread {
                             String substring[] = data.split(",");
                             String username = substring[1].trim();      
 							
-							System.out.println(username + " inside dead");
-                            
                             for(int i = 0; i < totalPlayers; i++){
 								
 								//send to all that a player is dead
@@ -306,15 +304,11 @@ public class Server extends Thread {
 
                     clientsPort[count] = playerPort;
 
-                    System.out.println(playerUsername);
-                    
                     if(checker.containsKey(playerUsername)){
                         int value = checker.get(playerUsername);
                         value = value + 1;
                         checker.put(playerUsername, value);
                         playerUsername = playerUsername + value;
-
-                        System.out.println(playerUsername);
 
                         //update the client of his new username
                         byte[] updateBuffer = new byte[256];
@@ -327,7 +321,6 @@ public class Server extends Thread {
                     }
 
                     else{
-                        System.out.println("inside else");
                         checker.put(playerUsername, 0);
                     }
 

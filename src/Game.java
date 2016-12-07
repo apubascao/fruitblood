@@ -85,7 +85,11 @@ public class Game extends JLayeredPane {
         } catch (IOException ioe) {
             System.out.println("Input/Ouput error occurs!");      
         }
-                
+        
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ie) {}
+
         loadChat();
         renderGUI();
     }
